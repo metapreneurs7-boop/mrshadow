@@ -41,36 +41,18 @@
         }
 
         /* --- Buttons --- */
-        .btn {
-            padding: 0.9rem 2.2rem;
-            border-radius: 8px;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
+        .btn { padding: 0.9rem 2.2rem; border-radius: 8px; font-weight: 600; text-decoration: none; display: inline-block; transition: all 0.3s ease; cursor: pointer; }
         .btn-primary { background: var(--primary); color: white; border: 1px solid var(--primary); }
         .btn-primary:hover { box-shadow: 0 8px 20px rgba(255, 13, 0, 0.4); transform: translateY(-3px); }
         .btn-outline { background: var(--glass); color: var(--text-main); border: 1px solid var(--border); }
         .btn-outline:hover { background: var(--border); transform: translateY(-3px); }
 
         /* --- Theme Toggle --- */
-        .theme-switch {
-            position: fixed; bottom: 30px; right: 30px; z-index: 1001;
-            background: var(--primary); color: white; width: 50px; height: 50px;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; box-shadow: 0 5px 15px rgba(255, 13, 0, 0.4); border: none;
-            transition: transform 0.3s ease;
-        }
+        .theme-switch { position: fixed; bottom: 30px; right: 30px; z-index: 1001; background: var(--primary); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 5px 15px rgba(255, 13, 0, 0.4); border: none; transition: transform 0.3s ease; }
         .theme-switch:hover { transform: scale(1.1); }
 
         /* --- Navbar --- */
-        nav {
-            position: fixed; top: 0; width: 100%; z-index: 1000;
-            padding: 1.2rem 8%; display: flex; justify-content: space-between; align-items: center;
-            background: var(--glass); backdrop-filter: blur(15px); border-bottom: 1px solid var(--border);
-        }
+        nav { position: fixed; top: 0; width: 100%; z-index: 1000; padding: 1.2rem 8%; display: flex; justify-content: space-between; align-items: center; background: var(--glass); backdrop-filter: blur(15px); border-bottom: 1px solid var(--border); }
         .logo { font-size: 1.4rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;}
         .logo span { color: var(--primary); }
         .nav-links { display: flex; gap: 2.5rem; list-style: none; }
@@ -83,59 +65,17 @@
         .section-header h2 { font-size: 2.5rem; margin-bottom: 0.5rem; }
         
         /* --- Hero Section --- */
-        .hero {
-            height: 90vh; display: flex; flex-direction: column; justify-content: center; align-items: center;
-            text-align: center; background: radial-gradient(circle at 50% 50%, var(--glass) 0%, transparent 70%);
-        }
+        .hero { height: 90vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: radial-gradient(circle at 50% 50%, var(--glass) 0%, transparent 70%); }
         .hero h1 { font-size: clamp(2.5rem, 7vw, 5.5rem); font-weight: 800; margin-bottom: 1rem; line-height: 1.1; }
         .hero-ctas { display: flex; gap: 1.5rem; margin-top: 2.5rem; flex-wrap: wrap; justify-content: center; }
         
         /* --- The Box Container --- */
-        .box-container {
-            background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
-            padding: 3.5rem; box-shadow: var(--shadow); max-width: 1100px; margin: 0 auto;
-        }
+        .box-container { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 3.5rem; box-shadow: var(--shadow); max-width: 1100px; margin: 0 auto; }
         .description-text { color: var(--text-dim); font-size: 1.15rem; white-space: pre-line; text-align: left; }
-
-        /* --- Dynamic Instagram Gallery --- */
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr); /* Forces exactly 3 columns */
-            gap: 20px;
-            margin-bottom: 3rem;
-            max-width: 1200px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .gallery-item {
-            border-radius: var(--radius);
-            overflow: hidden;
-            aspect-ratio: 1/1; /* Perfect squares for Instagram */
-            background-size: cover;
-            background-position: center;
-            border: 1px solid var(--border);
-            transition: 0.4s ease;
-            display: block;
-            position: relative;
-        }
-        .gallery-item:hover {
-            transform: scale(1.03) translateY(-5px);
-            border-color: var(--primary);
-            box-shadow: var(--shadow);
-        }
-        .gallery-overlay {
-            position: absolute; inset: 0; background: rgba(0,0,0,0.6);
-            display: flex; align-items: center; justify-content: center;
-            opacity: 0; transition: 0.3s ease; color: white; font-size: 2rem;
-        }
-        .gallery-item:hover .gallery-overlay { opacity: 1; }
 
         /* --- Video Feed --- */
         .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; }
-        .v-card {
-            background: var(--bg-card); border-radius: var(--radius); overflow: hidden;
-            border: 1px solid var(--border); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
+        .v-card { background: var(--bg-card); border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .v-card:hover { transform: translateY(-10px); border-color: var(--primary); }
         .v-thumb { width: 100%; aspect-ratio: 16/9; background-size: cover; background-position: center; }
         .v-info { padding: 20px; }
@@ -148,16 +88,23 @@
         .footer-cat ul li { margin-bottom: 14px; }
         .footer-cat ul li a { text-decoration: none; color: var(--text-dim); font-size: 0.95rem; transition: 0.3s; }
         .footer-cat ul li a:hover { color: var(--primary); padding-left: 8px; }
-
         .social-icons-row { display: flex; gap: 12px; flex-wrap: wrap; }
-        .social-btn { 
-            background: var(--glass); color: var(--text-main); width: 45px; height: 45px;
-            display: flex; align-items: center; justify-content: center; border-radius: 10px;
-            text-decoration: none; border: 1px solid var(--border); transition: 0.3s;
-        }
+        .social-btn { background: var(--glass); color: var(--text-main); width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 10px; text-decoration: none; border: 1px solid var(--border); transition: 0.3s; }
         .social-btn:hover { background: var(--primary); color: white; transform: translateY(-3px); }
-
         .copyright { text-align: center; padding-top: 40px; border-top: 1px solid var(--border); font-size: 0.85rem; color: var(--text-dim); }
+
+        /* --- Instagram Embed Container --- */
+        .insta-embed-wrapper {
+            max-width: 1000px;
+            margin: 0 auto 3rem;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px dashed var(--border);
+            border-radius: var(--radius);
+            background: var(--glass);
+        }
 
         @media (max-width: 768px) {
             .nav-links { display: none; }
@@ -165,7 +112,6 @@
             section { padding: 90px 5% 40px; }
             .hero-ctas { flex-direction: column; width: 100%; max-width: 300px; }
             .hero-ctas .btn { width: 100%; }
-            .gallery-grid { grid-template-columns: 1fr; } /* Stacks on mobile */
         }
     </style>
 </head>
@@ -215,10 +161,9 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
             <p style="color: var(--text-dim)">Latest Uploads from Instagram</p>
         </div>
         
-        <div class="gallery-grid" id="instaFeed">
-            <p style="text-align: center; grid-column: 1/-1;">Fetching latest photography...</p>
+        <div class="insta-embed-wrapper">
+            <p style="color: var(--text-dim);">Paste your Elfsight or SnapWidget code here in the HTML file.</p>
         </div>
-
         <div style="text-align: center;">
             <a href="https://www.instagram.com/yps_framefable?igsh=MWpyb3J6Nzh3NWxiYQ==" target="_blank" class="btn btn-outline">
                 <i class="fab fa-instagram" style="margin-right: 8px;"></i> View Full Gallery on IG
@@ -302,46 +247,7 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
         }
 
         // ==========================================
-        // DYNAMIC INSTAGRAM FETCH (RSS Method)
-        // ==========================================
-        // INSTRUCTION: Go to https://rss.app/ and create a free feed using your Instagram URL.
-        // Replace this temporary RSS string with your actual RSS.app URL:
-        const INSTA_RSS_URL = 'https://rss.app/feeds/v1.1/tGZk6L3QGZyQ4R8t.json'; 
-        
-        async function fetchInstagramContent() {
-            const feedContainer = document.getElementById('instaFeed');
-            try {
-                // We use RSS.app's direct JSON endpoint
-                const response = await fetch(INSTA_RSS_URL);
-                const data = await response.json();
-                
-                if(data.items && data.items.length > 0) {
-                    feedContainer.innerHTML = '';
-                    
-                    // Slice to grab EXACTLY the latest 3 posts
-                    data.items.slice(0, 3).forEach(post => {
-                        // Extract image URL (RSS app usually provides this in the 'image' property or enclosures)
-                        let imgUrl = post.image || (post.enclosures && post.enclosures[0] ? post.enclosures[0].url : 'https://via.placeholder.com/400x400?text=No+Image');
-                        
-                        const itemHtml = `
-                            <a href="${post.url}" target="_blank" class="gallery-item" style="background-image: url('${imgUrl}')">
-                                <div class="gallery-overlay"><i class="fab fa-instagram"></i></div>
-                            </a>
-                        `;
-                        feedContainer.innerHTML += itemHtml;
-                    });
-                } else {
-                    feedContainer.innerHTML = '<p style="text-align: center; grid-column: 1/-1;">No recent posts found.</p>';
-                }
-            } catch (err) {
-                feedContainer.innerHTML = '<p style="text-align: center; grid-column: 1/-1;">Failed to load Instagram feed. Check console for details.</p>';
-                console.error("Insta Fetch Error:", err);
-            }
-        }
-
-
-        // ==========================================
-        // DYNAMIC YOUTUBE FETCH
+        // DYNAMIC YOUTUBE FETCH (Works perfectly)
         // ==========================================
         const CHANNEL_ID = 'UCeWXzAoV3n7eNAS3daCLeCw';
         const YT_FEED_URL = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent('https://www.youtube.com/feeds/videos.xml?channel_id=' + CHANNEL_ID)}`;
@@ -375,11 +281,7 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
             }
         }
 
-        // Run both fetches when page loads
-        window.onload = () => {
-            fetchYouTubeContent();
-            fetchInstagramContent();
-        };
+        window.onload = fetchYouTubeContent;
     </script>
 </body>
 </html>
