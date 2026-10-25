@@ -195,6 +195,31 @@
         .consent-actions { display: flex; gap: 10px; flex-wrap: wrap; }
         .consent .btn { padding: 0.55rem 1.2rem; font-size: 0.85rem; }
 
+        /* ---------- Left menu button + slide-out menu ---------- */
+        body.menu-open { overflow: hidden; }
+        .nav-left { display: flex; align-items: center; gap: 14px; }
+        .menu-toggle { width: 44px; height: 44px; border-radius: 12px; background: var(--glass); border: 1px solid var(--border); color: var(--text-main); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; transition: border-color 0.3s ease, background 0.3s ease; }
+        .menu-toggle:hover { border-color: var(--primary); background: var(--primary-soft); }
+        .menu-toggle span { display: block; width: 20px; height: 2px; border-radius: 2px; background: currentColor; transition: transform 0.3s ease, opacity 0.3s ease; }
+        .menu-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .menu-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+        .menu-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        .menu-backdrop { position: fixed; inset: 0; z-index: 1290; background: rgba(0,0,0,0.55); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        .menu-backdrop.open { opacity: 1; pointer-events: auto; }
+        .side-menu { position: fixed; top: 0; left: 0; bottom: 0; width: min(300px, 84vw); z-index: 1300; background: var(--bg-card); border-right: 1px solid var(--border); box-shadow: var(--shadow); padding: 1.2rem 1rem 1.5rem; display: flex; flex-direction: column; visibility: hidden; transform: translateX(-105%); transition: transform 0.35s cubic-bezier(.2,.8,.2,1), visibility 0s linear 0.35s; }
+        .side-menu.open { visibility: visible; transform: none; transition: transform 0.35s cubic-bezier(.2,.8,.2,1), visibility 0s; }
+        .side-head { display: flex; align-items: center; justify-content: space-between; padding: 0.2rem 0.4rem 1.2rem; margin-bottom: 0.6rem; border-bottom: 1px solid var(--border); }
+        .side-close { width: 38px; height: 38px; border-radius: 10px; background: var(--glass); border: 1px solid var(--border); color: var(--text-main); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+        .side-close:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+        .side-close svg { width: 18px; height: 18px; }
+        .side-links { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+        .side-links a, .side-links button { display: flex; align-items: center; gap: 14px; width: 100%; padding: 0.95rem 1rem; border-radius: 12px; color: var(--text-main); text-decoration: none; background: none; border: none; font-family: inherit; font-weight: 600; font-size: 1rem; text-align: left; cursor: pointer; transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease; }
+        .side-links svg { width: 22px; height: 22px; flex-shrink: 0; }
+        .side-links a:hover, .side-links button:hover { background: var(--glass); color: var(--primary); transform: translateX(4px); }
+        .side-links a.active { background: var(--primary-soft); color: var(--primary); }
+        .side-foot { margin-top: auto; padding: 1rem 0.6rem 0; border-top: 1px solid var(--border); font-size: 0.8rem; color: var(--text-dim); }
+
         /* ---------- Responsive ---------- */
         @media (max-width: 768px) {
             .nav-links { display: none; }
@@ -204,6 +229,20 @@
             .hero-ctas .btn { width: 100%; }
             .consent { left: 12px; right: 12px; bottom: 12px; max-width: none; }
             .theme-switch { bottom: 90px; right: 16px; }
+        }
+        /* 3D on/off button */
+        .fx-switch { position: fixed; bottom: 92px; right: 30px; z-index: 1001; width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border); font-family: inherit; font-weight: 800; font-size: 0.85rem; letter-spacing: 0.5px; box-shadow: var(--shadow); transition: transform 0.3s ease, opacity 0.3s ease; }
+        .fx-switch:hover { transform: scale(1.1); }
+        .fx-off .fx-switch { opacity: 0.55; text-decoration: line-through; }
+        .fx-off #hero-canvas, .fx-off .caustics, .fx-off .depth-meter { display: none; }
+
+        /* phones and touch screens: cheaper effects (no blur filter, no caustic animation) */
+        @media (max-width: 768px), (pointer: coarse) {
+            #hero-canvas { filter: none; }
+            .caustics { filter: none; animation: none; }
+        }
+        @media (max-width: 768px) {
+            .fx-switch { bottom: 156px; right: 16px; }
         }
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -224,8 +263,13 @@
         <i class="fas fa-moon"></i>
     </button>
 
+    <button class="fx-switch" onclick="toggleFx()" id="fxBtn" aria-label="Turn 3D effects on or off" title="3D effects on/off">3D</button>
+
     <nav>
-        <div class="logo">MR<span>SHADOW</span></div>
+        <div class="nav-left">
+            <button class="menu-toggle" id="menuBtn" onclick="toggleMenu()" aria-label="Open menu" aria-expanded="false" aria-controls="sideMenu"><span></span><span></span><span></span></button>
+            <div class="logo">MR<span>SHADOW</span></div>
+        </div>
         <ul class="nav-links">
             <li><a href="#home">Home</a></li>
             <li><a href="#about">About</a></li>
@@ -234,6 +278,23 @@
             <li><button onclick="openTerms('terms')">Terms</button></li>
         </ul>
     </nav>
+
+    <!-- LEFT SLIDE-OUT MENU -->
+    <div class="menu-backdrop" id="menuBackdrop" onclick="closeMenu()"></div>
+    <aside class="side-menu" id="sideMenu" aria-label="Main menu">
+        <div class="side-head">
+            <div class="logo">MR<span>SHADOW</span></div>
+            <button class="side-close" onclick="closeMenu()" aria-label="Close menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+        </div>
+        <ul class="side-links">
+            <li><a href="#home" data-spy="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg><span>Home</span></a></li>
+            <li><a href="#gallery" data-spy="gallery"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg><span>Gallery</span></a></li>
+            <li><a href="#videos" data-spy="videos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M10 9l5 3-5 3z" fill="currentColor"/></svg><span>Videos</span></a></li>
+            <li><a href="#about" data-spy="about"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg><span>About</span></a></li>
+            <li><button type="button" onclick="closeMenu(); openTerms('terms')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg><span>Terms</span></button></li>
+        </ul>
+        <p class="side-foot">&copy; 2026 MRSHADOW</p>
+    </aside>
 
     <!-- HERO with 3D scene -->
     <section class="hero" id="home">
@@ -292,7 +353,7 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
     <!-- VIDEOS -->
     <section id="videos">
         <div class="section-header reveal">
-            <h2>The Latest Drops From Youtube</h2>
+            <h2>The Latest Drops</h2>
             <p style="color: var(--text-dim)">Synced directly from YouTube</p>
         </div>
         <div class="video-grid" id="youtubeFeed">
@@ -524,6 +585,7 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
 
         /* ---------- 3D tilt (cards) ---------- */
         const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const LITE = matchMedia('(max-width: 768px), (pointer: coarse)').matches;   // phones / touch screens
         function attachTilt(el) {
             if (reduceMotion || el.dataset.tiltBound) return;
             el.dataset.tiltBound = '1';
@@ -548,12 +610,52 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
             });
         }
 
+        /* ---------- Left slide-out menu ---------- */
+        const sideMenu = document.getElementById('sideMenu');
+        const menuBackdrop = document.getElementById('menuBackdrop');
+        const menuBtn = document.getElementById('menuBtn');
+        function openMenu() {
+            sideMenu.classList.add('open');
+            menuBackdrop.classList.add('open');
+            menuBtn.setAttribute('aria-expanded', 'true');
+            menuBtn.setAttribute('aria-label', 'Close menu');
+            document.body.classList.add('menu-open');
+            const first = sideMenu.querySelector('a');
+            if (first) first.focus({ preventScroll: true });
+        }
+        function closeMenu() {
+            sideMenu.classList.remove('open');
+            menuBackdrop.classList.remove('open');
+            menuBtn.setAttribute('aria-expanded', 'false');
+            menuBtn.setAttribute('aria-label', 'Open menu');
+            document.body.classList.remove('menu-open');
+        }
+        function toggleMenu() { sideMenu.classList.contains('open') ? closeMenu() : openMenu(); }
+        sideMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+
+        // highlight the menu item of the section currently in view
+        const spyLinks = {};
+        sideMenu.querySelectorAll('a[data-spy]').forEach(a => { spyLinks[a.dataset.spy] = a; });
+        const spy = new IntersectionObserver(entries => {
+            entries.forEach(en => {
+                if (!en.isIntersecting) return;
+                Object.values(spyLinks).forEach(l => l.classList.remove('active'));
+                const l = spyLinks[en.target.id];
+                if (l) l.classList.add('active');
+            });
+        }, { rootMargin: '-45% 0px -50% 0px' });
+        ['home', 'gallery', 'videos', 'about'].forEach(id => { const el = document.getElementById(id); if (el) spy.observe(el); });
+
         /* ---------- Three.js underwater scene: fish, bubbles, light rays ---------- */
-        (function initScene() {
+        let fxOn = read('fx') !== 'off';
+        let sceneStarted = false;
+        function initScene() {
+            sceneStarted = true;
             const canvas = document.getElementById('hero-canvas');
             if (!window.THREE || reduceMotion) return;
             let renderer;
-            try { renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true }); }
+            try { renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: !LITE }); }
             catch (e) { return; }
 
             const DEPTH_RANGE = 48;           // world units the camera sinks over the whole page
@@ -562,7 +664,7 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
             const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 140);
             camera.position.z = 7;
             scene.add(camera);
-            renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+            renderer.setPixelRatio(Math.min(devicePixelRatio, LITE ? 1.25 : 2));
 
             const RED = 0xff0d00;
 
@@ -604,7 +706,7 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
                 () => new THREE.TorusKnotGeometry(0.8, 0.22, 80, 12)
             ];
             const deep = [];
-            for (let i = 0; i < 6; i++) {
+            for (let i = 0; i < (LITE ? 3 : 6); i++) {
                 const mesh = new THREE.Mesh(
                     geos[i % geos.length](),
                     new THREE.MeshBasicMaterial({ color: i % 2 ? RED : 0xffffff, wireframe: true, transparent: true, opacity: 0.35 })
@@ -687,8 +789,9 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
                 fish.push(f);
             }
             // schools: [fish count, length, speed]
-            [[5, 0.55, 1.3], [6, 0.5, 1.0], [6, 0.6, 1.5], [5, 0.65, 0.9],
-             [5, 0.7, 1.2], [4, 0.75, 1.6], [4, 0.8, 1.0], [3, 0.9, 1.4]].forEach(sc => {
+            (LITE ? [[4, 0.55, 1.3], [4, 0.6, 1.5], [3, 0.7, 1.2], [3, 0.8, 1.0]]
+                  : [[5, 0.55, 1.3], [6, 0.5, 1.0], [6, 0.6, 1.5], [5, 0.65, 0.9],
+                     [5, 0.7, 1.2], [4, 0.75, 1.6], [4, 0.8, 1.0], [3, 0.9, 1.4]]).forEach(sc => {
                 const dir = Math.random() < 0.5 ? 1 : -1;
                 const z = -2 - Math.random() * 4;
                 const centre = REL_BOT + Math.random() * BAND;
@@ -700,8 +803,9 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
                 }
             });
             // three big, slow fish further back
-            [1.7, 2.1, 2.4].forEach((len, i) => {
-                addFish(len, REL_BOT + (i + 0.5) / 3 * BAND, -7, Math.random() < 0.5 ? 1 : -1, 0.5 + Math.random() * 0.3, 0.7);
+            const bigs = LITE ? [1.8, 2.3] : [1.7, 2.1, 2.4];
+            bigs.forEach((len, i) => {
+                addFish(len, REL_BOT + (i + 0.5) / bigs.length * BAND, -7, Math.random() < 0.5 ? 1 : -1, 0.5 + Math.random() * 0.3, 0.7);
             });
 
             /* --- Bubbles --- */
@@ -716,7 +820,7 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
                 x.fillStyle = g; x.fillRect(0, 0, 64, 64);
                 return new THREE.CanvasTexture(c);
             }
-            const BUBBLES = 260;
+            const BUBBLES = LITE ? 90 : 260;
             const BUBBLE_TOP = 7, BUBBLE_SPAN = DEPTH_RANGE + 14;
             const bPos = new Float32Array(BUBBLES * 3);
             const bSpeed = new Float32Array(BUBBLES);
@@ -737,7 +841,7 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
             scene.add(bubbles);
 
             /* --- Floating specks (marine snow) --- */
-            const count = 1200;
+            const count = LITE ? 350 : 1200;
             const pos = new Float32Array(count * 3);
             for (let i = 0; i < count; i++) {
                 pos[i * 3]     = (Math.random() - 0.5) * 30;
@@ -767,13 +871,13 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
             }
             const rayTex = rayTexture();
             const rays = [];
-            for (let i = 0; i < 6; i++) {
+            for (let i = 0; i < (LITE ? 3 : 6); i++) {
                 const m = new THREE.Mesh(
                     new THREE.PlaneGeometry(2.2 + Math.random() * 2, 24),
                     new THREE.MeshBasicMaterial({ map: rayTex, color: 0xaee4ff, transparent: true, opacity: 0.2,
                         blending: THREE.AdditiveBlending, depthWrite: false, fog: false, side: THREE.DoubleSide })
                 );
-                m.position.set(-10 + i * 4 + (Math.random() - 0.5) * 2, 7, -14);
+                m.position.set(-10 + i * (LITE ? 8 : 4) + (Math.random() - 0.5) * 2, 7, -14);
                 m.userData.base = -0.28 + Math.random() * 0.1;
                 m.userData.phase = Math.random() * 6;
                 camera.add(m);
@@ -808,12 +912,13 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
                 my = (e.clientY / innerHeight - 0.5) * 2;
             });
 
-            let depth = 0, last = 0, pitch = 0;
+            let depth = 0, last = 0, pitch = 0, velS = 0;
             const clock = new THREE.Clock();
             (function loop() {
                 requestAnimationFrame(loop);
-                if (document.hidden) return;
+                if (document.hidden || !fxOn) return;
                 const t = clock.getElapsedTime();
+                if (LITE && t - last < 0.015) return;          // cap very high refresh rates on phones
                 const dt = Math.min(0.05, t - last);
                 last = t;
 
@@ -884,7 +989,18 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
 
                 renderer.render(scene, camera);
             })();
-        })();
+        }
+
+        function applyFx(on) {
+            fxOn = on;
+            document.body.classList.toggle('fx-off', !on);
+            const btn = document.getElementById('fxBtn');
+            btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+            btn.title = on ? '3D effects: on (tap to turn off)' : '3D effects: off (tap to turn on)';
+            if (on && !sceneStarted) initScene();
+        }
+        function toggleFx() { applyFx(!fxOn); store('fx', fxOn ? 'on' : 'off'); }
+        applyFx(fxOn);
 
         /* ---------- YouTube feed ---------- */
         const CHANNEL_ID = 'UCeWXzAoV3n7eNAS3daCLeCw';
