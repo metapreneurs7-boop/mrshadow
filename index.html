@@ -617,10 +617,15 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
             }
 
             /* --- Fish --- */
-            function makeFish(color, len, glow) {
+            // Fish live in a band that is measured from the camera. As you scroll down the band
+            // slides the other way, so fish stream from the top of the screen to the bottom and
+            // new ones keep arriving from above.
+            const REL_TOP = 7.5, REL_BOT = -8, BAND = REL_TOP - REL_BOT, SINK = 0.75;
+
+            function makeFish(len) {
                 const g = new THREE.Group();
                 const mat = new THREE.MeshStandardMaterial({
-                    color: color, emissive: glow || 0x000000, emissiveIntensity: glow ? 0.9 : 0,
+                    color: 0xffffff, emissive: 0x00bcd4, emissiveIntensity: 0,
                     roughness: 0.45, metalness: 0.25, flatShading: true
                 });
                 const body = new THREE.Mesh(new THREE.SphereGeometry(1, 14, 10), mat);
@@ -652,47 +657,52 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
                     g.add(pup);
                 });
                 g.userData.tail = tail;
+                g.userData.mat = mat;
                 return g;
             }
 
+            // fish colours change with depth: warm near the surface, cool and glowing at the bottom
+            const STOPS = [0xff9a3c, 0xffc93c, 0x2ec4b6, 0x3a86ff, 0x8a63ff, 0x14b8a6].map(c => new THREE.Color(c));
+            const tmpA = new THREE.Color(), tmpB = new THREE.Color();
+            function colorAt(q, out) {
+                const f = Math.min(1, Math.max(0, q)) * (STOPS.length - 1);
+                const i = Math.min(STOPS.length - 2, Math.floor(f));
+                tmpA.copy(STOPS[i]); tmpB.copy(STOPS[i + 1]);
+                return out.copy(tmpA).lerp(tmpB, f - i);
+            }
+
             const fish = [];
-            function addFish(y0, color, len, glow, z, dir, speed) {
-                const f = makeFish(color, len, glow);
-                const x0 = (Math.random() - 0.5) * 30;
-                f.position.set(x0, y0, z);
+            function addFish(len, relY0, z, dir, speed, tint) {
+                const f = makeFish(len);
+                f.position.set((Math.random() - 0.5) * 30, 0, z);
                 f.userData.dir = dir;
                 f.userData.speed = speed;
-                f.userData.baseY = y0;
+                f.userData.relY0 = relY0;
                 f.userData.phase = Math.random() * Math.PI * 2;
                 f.userData.yaw = dir > 0 ? 0 : Math.PI;
+                f.userData.off = (Math.random() - 0.5) * 0.24;
+                f.userData.tint = tint || 1;
                 f.rotation.y = f.userData.yaw;
                 scene.add(f);
                 fish.push(f);
             }
-            const schools = [
-                { y: 2.5,  n: 5, color: 0xff9a3c, len: 0.55 },
-                { y: -4.5, n: 6, color: 0xffc93c, len: 0.5 },
-                { y: -11,  n: 6, color: 0x2ec4b6, len: 0.6 },
-                { y: -18,  n: 5, color: 0x3a86ff, len: 0.65 },
-                { y: -25,  n: 5, color: 0x8a63ff, len: 0.7 },
-                { y: -32,  n: 4, color: 0x14b8a6, len: 0.75, glow: 0x00bcd4 },
-                { y: -39,  n: 4, color: 0x1e3a8a, len: 0.8,  glow: 0x00e5ff },
-                { y: -45,  n: 3, color: 0x3b0a45, len: 0.9,  glow: 0xff3df0 }
-            ];
-            schools.forEach(sc => {
+            // schools: [fish count, length, speed]
+            [[5, 0.55, 1.3], [6, 0.5, 1.0], [6, 0.6, 1.5], [5, 0.65, 0.9],
+             [5, 0.7, 1.2], [4, 0.75, 1.6], [4, 0.8, 1.0], [3, 0.9, 1.4]].forEach(sc => {
                 const dir = Math.random() < 0.5 ? 1 : -1;
-                const speed = 0.8 + Math.random() * 0.9;
                 const z = -2 - Math.random() * 4;
-                for (let i = 0; i < sc.n; i++) {
-                    addFish(sc.y + (Math.random() - 0.5) * 3, sc.color, sc.len * (0.85 + Math.random() * 0.3),
-                            sc.glow, z + (Math.random() - 0.5) * 2, dir, speed * (0.9 + Math.random() * 0.2));
+                const centre = REL_BOT + Math.random() * BAND;
+                for (let i = 0; i < sc[0]; i++) {
+                    let rel = centre + (Math.random() - 0.5) * 3;
+                    rel = REL_BOT + ((rel - REL_BOT) % BAND + BAND) % BAND;
+                    addFish(sc[1] * (0.85 + Math.random() * 0.3), rel, z + (Math.random() - 0.5) * 2,
+                            dir, sc[2] * (0.9 + Math.random() * 0.2));
                 }
             });
-            [
-                { y: -8,  len: 1.7, color: 0x5aa9e6 },
-                { y: -22, len: 2.1, color: 0x4a6fa5 },
-                { y: -36, len: 2.4, color: 0x24305e, glow: 0x4d7cff }
-            ].forEach(b => addFish(b.y, b.color, b.len, b.glow, -7, Math.random() < 0.5 ? 1 : -1, 0.5 + Math.random() * 0.3));
+            // three big, slow fish further back
+            [1.7, 2.1, 2.4].forEach((len, i) => {
+                addFish(len, REL_BOT + (i + 0.5) / 3 * BAND, -7, Math.random() < 0.5 ? 1 : -1, 0.5 + Math.random() * 0.3, 0.7);
+            });
 
             /* --- Bubbles --- */
             function bubbleTexture() {
@@ -798,7 +808,7 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
                 my = (e.clientY / innerHeight - 0.5) * 2;
             });
 
-            let depth = 0, last = 0;
+            let depth = 0, last = 0, pitch = 0;
             const clock = new THREE.Clock();
             (function loop() {
                 requestAnimationFrame(loop);
@@ -808,7 +818,9 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
                 last = t;
 
                 // ease toward the scroll position so the descent feels smooth
+                const prevDepth = depth;
                 depth += ((window.scrollDepth || 0) - depth) * 0.06;
+                const vel = dt > 0 ? (depth - prevDepth) / dt : 0;   // scroll speed
                 camera.position.y = -depth * DEPTH_RANGE;
                 camera.position.x = Math.sin(t * 0.3) * 0.25 + mx * 0.3;
                 camera.lookAt(camera.position.x * 0.5, camera.position.y, 0);
@@ -830,15 +842,29 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
                     m.rotation.y += 0.04 * m.userData.spin;
                 });
 
-                // fish swim, bob and wag their tails
+                // fish stream downward as you scroll (wrapping back in at the top), tilting nose-down
+                const target = Math.max(-0.6, Math.min(0.6, vel * DEPTH_RANGE * SINK * 0.12));
+                pitch += (target - pitch) * 0.1;
                 fish.forEach(f => {
                     const u = f.userData;
                     f.position.x += u.dir * u.speed * dt;
                     if (f.position.x > 16) f.position.x = -16;
                     else if (f.position.x < -16) f.position.x = 16;
-                    f.position.y = u.baseY + Math.sin(t * 0.8 + u.phase) * 0.25;
+
+                    let rel = (u.relY0 - SINK * DEPTH_RANGE * depth - REL_BOT) % BAND;
+                    if (rel < 0) rel += BAND;
+                    rel += REL_BOT;
+                    f.position.y = camera.position.y + rel + Math.sin(t * 0.8 + u.phase) * 0.25;
+                    const edge = Math.min(rel - REL_BOT, REL_TOP - rel);   // shrink at the band edges
+                    f.scale.setScalar(Math.max(0.001, Math.min(1, edge / 1.2)));
+
                     f.rotation.y = u.yaw + Math.sin(t * u.speed * 5 + u.phase) * 0.07;
+                    f.rotation.z = -pitch;
                     u.tail.rotation.y = Math.sin(t * u.speed * 5 + u.phase) * 0.55;
+
+                    colorAt(depth + u.off, f.userData.mat.color);
+                    if (u.tint !== 1) u.mat.color.multiplyScalar(u.tint);
+                    u.mat.emissiveIntensity = Math.max(0, depth - 0.4) * 1.6;
                 });
 
                 // bubbles rise and wobble
