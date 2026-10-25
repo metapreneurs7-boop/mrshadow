@@ -160,6 +160,13 @@
         .copyright button { background: none; border: none; color: var(--primary); cursor: pointer; font-family: inherit; font-size: inherit; }
         .copyright button:hover { text-decoration: underline; }
 
+        /* ---------- Production credit (bottom of footer) ---------- */
+        .production { text-align: center; margin-top: 18px; font-size: 0.78rem; letter-spacing: 3px; text-transform: uppercase; color: var(--text-dim); }
+        .production a { color: inherit; text-decoration: none; transition: 0.3s; }
+        .production strong { color: var(--primary); font-weight: 800; }
+        .production a:hover { color: var(--text-main); }
+        .production a:hover strong { text-shadow: 0 0 14px rgba(255,13,0,0.6); }
+
         /* ---------- Terms modal ---------- */
         .modal { position: fixed; inset: 0; z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); perspective: 1600px; }
         .modal.open { display: flex; }
@@ -426,6 +433,9 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
             &copy; 2026 MRSHADOW. Built for the future of content. &middot;
             <button onclick="openTerms('terms')">Terms &amp; Conditions</button> &middot;
             <button onclick="openTerms('privacy')">Privacy</button>
+        </div>
+        <div class="production">
+            <a href="https://www.instagram.com/yogeshpawar.45?igsh=MWZiOGh3aGF0N2Z3Zw==" target="_blank" rel="noopener">A <strong>Yogeshpawar</strong> Production</a>
         </div>
     </footer>
 
