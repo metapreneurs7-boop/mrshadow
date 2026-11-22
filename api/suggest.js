@@ -1,4 +1,4 @@
-// Receives a suggestion from the website and stores it as a small JSON file in Vercel Blob (suggestions/).
+// Receives a suggestion from the website and stores it as a small JSON file in your (private) Vercel Blob store under suggestions/.
 // Only you can read them: open /admin.html and sign in with your ADMIN_KEY.
 import { put } from '@vercel/blob';
 
@@ -22,12 +22,18 @@ export default async function handler(req, res) {
       at: new Date().toISOString()
     };
     await put('suggestions/' + Date.now() + '.json', JSON.stringify(rec), {
-      access: 'public',          // the file name gets a long random suffix, so it cannot be guessed; only /api/suggestions (admin key) lists them
+      access: 'private',         // your Blob store is Private: nothing here has a public link, only your admin page can read it
       addRandomSuffix: true,
       contentType: 'application/json'
     });
     return res.status(200).json({ ok: true });
   } catch (e) {
-    return res.status(500).json({ error: 'Suggestion box unavailable. Is a Blob store connected to this project?' });
+    const m = String((e && e.message) || '');
+    console.error('[suggest] failed:', m);
+    let why = 'Suggestion box unavailable. Please try again later.';
+    if (/credentials|token/i.test(m)) why = 'Suggestion box not set up: the Blob store is not connected to this project (BLOB_READ_WRITE_TOKEN is missing). Connect it in Vercel > Storage, then redeploy.';
+    else if (/private|public|access/i.test(m)) why = 'Suggestion box setup problem: the Blob store access type does not match. Make sure you uploaded the latest api/suggest.js and redeployed.';
+    else if (/Cannot find|Cannot resolve|ERR_MODULE/i.test(m)) why = 'Suggestion box setup problem: package.json (with @vercel/blob) is missing from the repository root. Add it and redeploy.';
+    return res.status(500).json({ error: why });
   }
 }
