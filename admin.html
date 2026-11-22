@@ -56,7 +56,7 @@ function render() {
 }
 async function load() {
   say('Loading…');
-  try { items = (await api('GET')).items; $('filters').hidden = false; $('out').hidden = false; say(items.length + ' suggestion' + (items.length === 1 ? '' : 's')); render(); }
+  try { const d = await api('GET'); items = d.items; $('filters').hidden = false; $('out').hidden = false; say(items.length + ' suggestion' + (items.length === 1 ? '' : 's') + ' (files stored: ' + (d.stored == null ? '?' : d.stored) + ')' + (d.problems && d.problems.length ? '  ·  PROBLEM: ' + d.problems.join(' | ') : '')); render(); }
   catch (e) { say(e.message, true); $('out').hidden = true; $('filters').hidden = true; $('list').replaceChildren(); if (/key/i.test(e.message)) { key = ''; try { sessionStorage.removeItem('adm'); } catch (x) {} } }
 }
 $('f').onsubmit = (e) => { e.preventDefault(); key = $('key').value; try { sessionStorage.setItem('adm', key); } catch (x) {} load(); };
