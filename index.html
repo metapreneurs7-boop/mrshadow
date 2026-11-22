@@ -421,51 +421,39 @@
         @media (prefers-reduced-motion: reduce) { .hero::before, .hero::after, .ticker-track, .v-card { animation: none !important; } }
 
 
-        /* ================= Community uploads ================= */
-        .community { max-width: 980px; margin: 4rem auto 0; padding: 2rem; border-radius: 28px; background: var(--card-glass, var(--glass)); border: 1px solid var(--card-edge, var(--border)); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
-        .community-head { text-align: center; margin-bottom: 1.5rem; }
-        .community-head h3 { font-family: var(--font-display); font-size: 1.8rem; letter-spacing: -0.02em; margin: 6px 0; }
-        .community-head p { color: var(--text-dim); }
-        .dropzone { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; padding: 2.2rem 1rem; border: 2px dashed var(--border); border-radius: 22px; cursor: pointer; transition: 0.25s; color: var(--text-main); }
-        .dropzone:hover, .dropzone.drag, .dropzone:focus-visible { border-color: var(--lens-a); background: var(--primary-soft); outline: none; transform: translateY(-2px); }
-        .dropzone svg { width: 38px; height: 38px; color: var(--lens-a); }
-        .dropzone b { font-family: var(--font-display); font-size: 1.1rem; }
-        .dropzone small { color: var(--text-dim); }
-        .dropzone.off { opacity: 0.6; cursor: not-allowed; }
-        .cm-queue { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; margin-top: 1rem; }
-        .cm-queue:empty { display: none; }
-        .cm-item { position: relative; aspect-ratio: 1; border-radius: 16px; overflow: hidden; background: var(--glass); border: 1px solid var(--border); }
-        .cm-item img, .cm-item video { width: 100%; height: 100%; object-fit: cover; display: block; }
-        .cm-item .rm { position: absolute; top: 6px; right: 6px; width: 26px; height: 26px; border-radius: 50%; border: none; cursor: pointer; background: rgba(0,0,0,0.65); color: #fff; font-size: 16px; line-height: 1; }
-        .cm-item .bar { position: absolute; left: 0; right: 0; bottom: 0; height: 5px; background: rgba(0,0,0,0.4); }
-        .cm-item .bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--chat-a, #7c6bff), var(--lens-a)); transition: width 0.2s; }
-        .cm-item .st { position: absolute; left: 6px; bottom: 10px; font-size: 0.7rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: rgba(0,0,0,0.65); color: #fff; }
-        .cm-item.err { border-color: #ff4a3d; } .cm-item.err .st { background: #c4251b; }
-        .cm-consent { display: flex; gap: 10px; align-items: flex-start; margin-top: 1rem; font-size: 0.88rem; color: var(--text-dim); line-height: 1.5; cursor: pointer; }
-        .cm-consent input { margin-top: 4px; accent-color: var(--primary); width: 16px; height: 16px; flex-shrink: 0; }
-        .cm-consent a { color: var(--lens-a); text-decoration: underline; }
-        .cm-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 1rem; }
-        .cm-actions .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none; }
-        .cm-status { font-size: 0.9rem; color: var(--text-dim); min-height: 1.3em; }
-        .cm-status.ok { color: #2ecc71; } .cm-status.bad { color: #ff6a61; }
-        .cm-sub { font-family: var(--font-display); font-size: 1.05rem; margin: 2rem 0 0.8rem; display: flex; align-items: center; gap: 10px; }
-        .cm-sub small { font-family: inherit; font-weight: 500; color: var(--text-dim); font-size: 0.8rem; }
-        .cm-grid { columns: 3 200px; column-gap: 12px; }
-        .cm-grid .tile { position: relative; display: block; width: 100%; margin: 0 0 12px; padding: 0; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; cursor: zoom-in; break-inside: avoid; background: var(--glass); transition: transform 0.3s ease, box-shadow 0.3s ease; }
-        .cm-grid .tile:hover { transform: translateY(-4px); box-shadow: 0 14px 34px rgba(0,0,0,0.35); }
-        .cm-grid .tile img { display: block; width: 100%; height: auto; min-height: 90px; }
-        .cm-grid .tile .vb { position: absolute; left: 8px; bottom: 8px; display: flex; align-items: center; gap: 5px; font-size: 0.72rem; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: rgba(0,0,0,0.7); color: #fff; }
-        .cm-grid .tile .vb svg { width: 11px; height: 11px; }
-        .cm-grid .tile .pend { position: absolute; top: 8px; left: 8px; font-size: 0.68rem; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: rgba(255,170,0,0.92); color: #1a1200; }
-        .cm-empty { text-align: center; color: var(--text-dim); padding: 1.5rem 0 0.5rem; }
-        .cm-grid:empty + .cm-empty { display: block; } .cm-grid:not(:empty) + .cm-empty { display: none; }
-
-        .lightbox { position: fixed; inset: 0; z-index: 3000; display: none; align-items: center; justify-content: center; background: rgba(3, 8, 18, 0.9); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); padding: 4vh 4vw; }
-        .lightbox.open { display: flex; animation: msgIn 0.25s ease; }
-        .lightbox img, .lightbox video { max-width: 100%; max-height: 92vh; border-radius: 14px; box-shadow: 0 30px 90px rgba(0,0,0,0.6); background: #000; }
-        .lightbox button { position: absolute; width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.25); background: rgba(255,255,255,0.1); color: #fff; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .lightbox button:hover { background: var(--primary); }
-        .lightbox .lb-x { top: 18px; right: 18px; } .lightbox .lb-p { left: 18px; top: 50%; translate: 0 -50%; } .lightbox .lb-n { right: 18px; top: 50%; translate: 0 -50%; }
+        /* ================= Suggestion box ================= */
+        .suggest { max-width: 760px; margin: 4rem auto 0; padding: 2.2rem; border-radius: 28px; background: var(--card-glass, var(--glass)); border: 1px solid var(--card-edge, var(--border)); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+        .suggest-head { text-align: center; margin-bottom: 1.6rem; }
+        .suggest-head h3 { font-family: var(--font-display); font-size: 1.9rem; letter-spacing: -0.02em; margin: 6px 0; }
+        .suggest-head p { color: var(--text-dim); max-width: 520px; margin: 0 auto; line-height: 1.6; }
+        .sb-cats { border: 0; padding: 0; margin: 0 0 1.2rem; display: flex; flex-wrap: wrap; gap: 10px; }
+        .sb-cats legend { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 10px; padding: 0; float: left; width: 100%; }
+        .sb-cats label { cursor: pointer; }
+        .sb-cats input { position: absolute; opacity: 0; pointer-events: none; }
+        .sb-cats span { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; border-radius: 999px; font-weight: 600; font-size: 0.9rem; background: var(--glass); border: 1px solid var(--border); color: var(--text-main); transition: 0.25s; }
+        .sb-cats label:hover span { border-color: var(--lens-a); transform: translateY(-2px); }
+        .sb-cats input:checked + span { background: linear-gradient(135deg, var(--chat-a, #7c6bff), var(--lens-a)); border-color: transparent; color: #fff; box-shadow: 0 8px 22px rgba(124,107,255,0.3); }
+        .sb-cats input:focus-visible + span { outline: 2px solid var(--lens-a); outline-offset: 2px; }
+        .sb-field { display: block; position: relative; margin-bottom: 1.1rem; }
+        .sb-field > span { display: block; font-size: 0.82rem; font-weight: 700; margin-bottom: 8px; }
+        .sb-field em { font-style: normal; font-weight: 500; color: var(--text-dim); }
+        .sb-field textarea, .sb-field input { width: 100%; padding: 13px 16px; border-radius: 16px; background: var(--glass); border: 1px solid var(--border); color: var(--text-main); font: inherit; font-size: 1rem; line-height: 1.5; outline: none; transition: border-color 0.25s, box-shadow 0.25s; }
+        .sb-field textarea { resize: vertical; min-height: 120px; }
+        .sb-field textarea:focus, .sb-field input:focus { border-color: var(--lens-a); box-shadow: 0 0 0 4px var(--primary-soft); }
+        .sb-field small { position: absolute; right: 12px; bottom: 10px; font-size: 0.72rem; color: var(--text-dim); font-variant-numeric: tabular-nums; pointer-events: none; }
+        .sb-hp { position: absolute !important; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+        .sb-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+        .sb-actions .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none; }
+        .sb-status { font-size: 0.92rem; color: var(--text-dim); min-height: 1.3em; flex: 1; min-width: 180px; }
+        .sb-status.ok { color: #2ecc71; } .sb-status.bad { color: #ff6a61; }
+        .sb-note { margin-top: 1rem; font-size: 0.78rem; color: var(--text-dim); line-height: 1.5; }
+        .sb-note a { color: var(--lens-a); text-decoration: underline; cursor: pointer; }
+        .sb-recent { margin-top: 1.6rem; padding-top: 1.2rem; border-top: 1px solid var(--border); }
+        .sb-recent h4 { font-family: var(--font-display); font-size: 1rem; margin-bottom: 10px; }
+        .sb-recent ul { list-style: none; display: grid; gap: 8px; }
+        .sb-recent li { padding: 10px 14px; border-radius: 14px; background: var(--glass); border: 1px solid var(--border); font-size: 0.9rem; line-height: 1.5; overflow-wrap: anywhere; }
+        .sb-recent li b { color: var(--lens-a); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; margin-right: 8px; }
+        .sb-recent li small { display: block; color: var(--text-dim); margin-top: 2px; }
 
         /* chat attachments */
         .chat-attach { flex-shrink: 0; width: 36px !important; height: 36px !important; background: none !important; color: var(--text-dim) !important; border: none; }
@@ -480,7 +468,7 @@
         .bubble .thumbs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
         .bubble .thumbs .att { width: 92px; height: 92px; }
         .chat-panel.dragover::after { content: "Drop photos or videos to attach"; position: absolute; inset: 0; z-index: 5; display: flex; align-items: center; justify-content: center; font-weight: 700; background: rgba(124,107,255,0.28); backdrop-filter: blur(4px); border: 2px dashed var(--chat-a); border-radius: 26px; }
-        @media (max-width: 768px) { .community { padding: 1.2rem; border-radius: 22px; } .cm-grid { columns: 2 140px; } }
+        @media (max-width: 768px) { .suggest { padding: 1.3rem; border-radius: 22px; } .suggest-head h3 { font-size: 1.5rem; } }
 
         /* ================= AI chat assistant ================= */
         :root { --chat-bg: rgba(10, 16, 30, 0.9); --chat-bot: rgba(255,255,255,0.06); --chat-ink: #eef2ff; --chat-a: #7c6bff; --chat-b: #ff4a3d; }
@@ -730,29 +718,33 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
             </a>
         </div>
 
-        <div class="community reveal" id="community">
-            <div class="community-head">
-                <span class="tag">Community</span>
-                <h3>Share your moments</h3>
-                <p>Upload your photos and videos. Approved posts appear below for everyone to see.</p>
+        <div class="suggest reveal" id="suggest">
+            <div class="suggest-head">
+                <span class="tag">Suggestion Box</span>
+                <h3>What should I make next?</h3>
+                <p>Got an idea for a video, a stock topic to explain or a tech to review? Drop it here. I read every suggestion.</p>
             </div>
-            <div class="dropzone" id="cmDrop" tabindex="0" role="button" aria-label="Choose photos or videos to upload">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
-                <b>Drop photos or videos here</b>
-                <small id="cmHint">or click to browse &middot; photos up to 10&nbsp;MB &middot; videos up to 50&nbsp;MB &middot; max 6 files</small>
-                <input type="file" id="cmFile" accept="image/*,video/*" multiple hidden>
-            </div>
-            <div class="cm-queue" id="cmQueue"></div>
-            <label class="cm-consent"><input type="checkbox" id="cmConsent"> <span>I own these files, they are appropriate, and I agree they may be shown publicly on this website. See the <a href="#terms" data-terms="terms">Terms &amp; Conditions</a>.</span></label>
-            <div class="cm-actions">
-                <button type="button" class="btn btn-primary" id="cmSubmit" disabled>Upload</button>
-                <span class="cm-status" id="cmStatus" role="status" aria-live="polite"></span>
-            </div>
-            <h4 class="cm-sub" id="cmMineTitle" hidden>Your uploads <small>&middot; waiting for approval</small></h4>
-            <div class="cm-grid" id="cmMine"></div>
-            <h4 class="cm-sub">Community gallery</h4>
-            <div class="cm-grid" id="cmGrid"></div>
-            <p class="cm-empty" id="cmEmpty">No community posts yet. Be the first!</p>
+            <form id="sbForm" novalidate>
+                <fieldset class="sb-cats">
+                    <legend>Topic</legend>
+                    <label><input type="radio" name="sbCat" value="Tech" checked><span>💻 Tech</span></label>
+                    <label><input type="radio" name="sbCat" value="Share Market"><span>📈 Share Market</span></label>
+                    <label><input type="radio" name="sbCat" value="Life Vlog"><span>🎬 Life Vlog</span></label>
+                    <label><input type="radio" name="sbCat" value="Other"><span>✨ Other</span></label>
+                </fieldset>
+                <label class="sb-field"><span>Your idea</span>
+                    <textarea id="sbIdea" maxlength="600" rows="4" placeholder="e.g. Explain how SIPs really work, or review the best budget phones"></textarea>
+                    <small id="sbCount">0/600</small></label>
+                <label class="sb-field"><span>Your name or Instagram handle <em>(optional)</em></span>
+                    <input id="sbName" type="text" maxlength="40" autocomplete="nickname" placeholder="So I can give you a shout-out"></label>
+                <input type="text" id="sbHp" class="sb-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+                <div class="sb-actions">
+                    <button type="submit" class="btn btn-primary" id="sbSend" disabled>Send suggestion</button>
+                    <span class="sb-status" id="sbStatus" role="status" aria-live="polite"></span>
+                </div>
+                <p class="sb-note">Please don't include passwords or private details. By sending, you agree to our <a data-terms="privacy">Privacy Policy</a>. Share-market ideas are for education only, never financial advice.</p>
+            </form>
+            <div class="sb-recent" id="sbRecent" hidden><h4>Your recent suggestions</h4><ul id="sbList"></ul></div>
         </div>
     </section>
 
@@ -887,6 +879,7 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
                     <h4>Information We Collect</h4>
                     <p>This site does not require an account and does not directly collect personal information through forms. Your theme preference and consent choice are stored locally in your browser only.</p>
                     <h4>Third-Party Data Collection</h4>
+                    <p>We use Vercel Web Analytics to count visits (pages viewed, country, device type and referring site). It does not use cookies and does not identify you personally.</p>
                     <p>Embedded services (YouTube thumbnails, the Instagram feed widget, fonts and icon libraries) may set cookies or collect usage data such as your IP address and device information, under their own privacy policies.</p>
                     <h4>How Data Is Used</h4>
                     <ul>
@@ -957,13 +950,6 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
             <p class="chat-note"><span>AI can make mistakes. Markets = education only.</span><span class="chat-count" id="chatCount" hidden></span></p>
         </div>
     </section>
-
-    <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Media viewer">
-        <button class="lb-x" id="lbX" aria-label="Close">&times;</button>
-        <button class="lb-p" id="lbP" aria-label="Previous">&#8249;</button>
-        <button class="lb-n" id="lbN" aria-label="Next">&#8250;</button>
-        <div id="lbStage"></div>
-    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
@@ -1209,7 +1195,7 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
                         if (/^(https:\/\/|#)/.test(href)) {
                             const a = document.createElement('a'); a.textContent = mm[1]; a.href = href;
                             if (href[0] === '#') {
-                                a.addEventListener('click', e => { const k = href.slice(1); if (['terms', 'privacy', 'disclaimer'].indexOf(k) > -1) { e.preventDefault(); openTerms(k); } else if (k === 'community') { e.preventDefault(); const c = document.getElementById('community'); if (c) { document.getElementById('chatClose').click(); c.scrollIntoView({ behavior: 'smooth', block: 'start' }); } } });
+                                a.addEventListener('click', e => { const k = href.slice(1); if (['terms', 'privacy', 'disclaimer'].indexOf(k) > -1) { e.preventDefault(); openTerms(k); } else if (k === 'suggest') { e.preventDefault(); const c = document.getElementById('suggest'); if (c) { document.getElementById('chatClose').click(); c.scrollIntoView({ behavior: 'smooth', block: 'start' }); } } });
                             } else { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
                             el.append(a);
                         } else el.append(mm[1]);
@@ -1367,8 +1353,8 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
                 if (has(/(twitter|\bx\b|tweet)/)) return "You can follow on X (Twitter) here: [@YogeshPawar455](" + XL + ") 🐦";
                 if (has(/(subscribe|youtube|channel link|follow)/))
                     return "Subscribe on YouTube to never miss a video 🔔\n[Subscribe to the channel](" + SUB + ")";
-                if (has(/(upload|photo|picture|image|video i|my video|share my|post my|submit)/))
-                    return "You can share your own photos and videos 📸\nOpen the **Community** section in the Gallery, pick your files and tick the agreement. Approved posts show for everyone.\n[Go to Community uploads](#community)";
+                if (has(/(suggest|idea|request|topic|content (?:you|u) should|should (?:you|u) (?:make|cover)|make a video|video on|feedback)/))
+                    return "I love ideas 💡 Tell me what to make next in the **Suggestion Box** (in the Gallery section). Pick a topic, write your idea and send it.\n[Open the Suggestion Box](#suggest)";
                 if (has(/(terms|privacy|legal|cookie|disclaimer|policy|conditions)/))
                     return "You can read the legal pages here:\n• [Terms & Conditions](#terms)\n• [Privacy Policy](#privacy)\n• [Disclaimer](#disclaimer)";
                 if (has(/(dark|light|theme|3d|lag|laggy|slow|fish|water|animation|effect|menu|button)/))
@@ -1420,7 +1406,7 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
                 } else {
                     await wait(450 + Math.random() * 450);
                 }
-                if (atts.length) return "I got your file 📎 but I couldn't reach the AI to look at it just now. Please try again in a moment.\nWant to show it to everyone instead? Post it in the Community section.\n[Go to Community uploads](#community)";
+                if (atts.length) return "I got your file 📎 but I couldn't reach the AI to look at it just now. Please try again in a moment.\nHave an idea for a video? Drop it in the Suggestion Box.\n[Open the Suggestion Box](#suggest)";
                 return localReply(text);
             }
 
@@ -1488,143 +1474,45 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
         })();
 
 
-        /* ---------- Community uploads (photos & videos) ---------- */
+        /* ---------- Suggestion box ---------- */
         (function () {
-            // SETUP: create a free Cloudinary account, then fill these two lines (see the setup guide).
-            const CLOUD_NAME = '';        // e.g. 'dxyz123abc'
-            const UPLOAD_PRESET = '';     // an UNSIGNED upload preset (Settings > Upload > Upload presets)
-            const SHOW_TAG = 'community'; // you add this tag to a file in Cloudinary to approve it for the public gallery
-            const MAX_FILES = 6, MAX_IMG = 10, MAX_VID = 50;
-
-            const drop = document.getElementById('cmDrop'), fileIn = document.getElementById('cmFile'), queueEl = document.getElementById('cmQueue');
-            const consent = document.getElementById('cmConsent'), submit = document.getElementById('cmSubmit'), status = document.getElementById('cmStatus');
-            const grid = document.getElementById('cmGrid'), mine = document.getElementById('cmMine'), mineTitle = document.getElementById('cmMineTitle'), hint = document.getElementById('cmHint');
-            if (!drop) return;
-            const ON = !!(CLOUD_NAME && UPLOAD_PRESET);
-            const API = window.__CLOUDINARY_API || 'https://api.cloudinary.com';
-            const CDN = window.__CLOUDINARY_CDN || 'https://res.cloudinary.com';
-            let queue = [], uploading = false, gallery = [];
-
-            const PLAY = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
-            function sget() { try { return JSON.parse(localStorage.getItem('cm-mine') || '[]'); } catch (e) { return []; } }
-            function sset(v) { try { localStorage.setItem('cm-mine', JSON.stringify(v.slice(0, 24))); } catch (e) {} }
-            function say(msg, cls) { status.textContent = msg || ''; status.className = 'cm-status' + (cls ? ' ' + cls : ''); }
-            function refresh() { submit.disabled = !ON || uploading || !queue.length || !consent.checked; }
-
-            if (!ON) { drop.classList.add('off'); hint.textContent = 'Community uploads are opening soon.'; say('Uploads are not switched on yet.'); }
-
-            function addFiles(list) {
-                if (!ON) return;
-                for (const f of Array.from(list)) {
-                    const img = /^image\//.test(f.type), vid = /^video\//.test(f.type);
-                    if (!img && !vid) { say('Only photos and videos are allowed.', 'bad'); continue; }
-                    if (f.size > (img ? MAX_IMG : MAX_VID) * 1048576) { say(f.name + ' is too big (max ' + (img ? MAX_IMG : MAX_VID) + ' MB).', 'bad'); continue; }
-                    if (queue.length >= MAX_FILES) { say('Max ' + MAX_FILES + ' files at a time.', 'bad'); break; }
-                    queue.push({ file: f, kind: img ? 'image' : 'video', url: URL.createObjectURL(f), state: 'ready' });
-                }
-                renderQueue(); refresh();
+            // Ideas are sent to /api/suggest (see the vercel-suggestions pack) and stored privately for you to read at /admin.html.
+            const form = document.getElementById('sbForm'); if (!form) return;
+            const idea = document.getElementById('sbIdea'), nameEl = document.getElementById('sbName'), hp = document.getElementById('sbHp');
+            const send = document.getElementById('sbSend'), status = document.getElementById('sbStatus'), count = document.getElementById('sbCount');
+            const recent = document.getElementById('sbRecent'), list = document.getElementById('sbList');
+            let busy = false;
+            const get = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+            const put = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+            const say = (m, c) => { status.textContent = m || ''; status.className = 'sb-status' + (c ? ' ' + c : ''); };
+            function sync() { count.textContent = idea.value.length + '/600'; send.disabled = busy || idea.value.trim().length < 10; }
+            function mine() { try { return JSON.parse(get('sb-mine') || '[]'); } catch (e) { return []; } }
+            function renderMine() {
+                const m = mine(); recent.hidden = !m.length; list.innerHTML = '';
+                m.forEach(it => { const li = document.createElement('li'); const b = document.createElement('b'); b.textContent = it.c; li.append(b); li.append(document.createTextNode(it.i));
+                    const sm = document.createElement('small'); sm.textContent = 'Sent ✓ ' + new Date(it.t).toLocaleDateString(); li.append(sm); list.append(li); });
             }
-            function renderQueue() {
-                queueEl.innerHTML = '';
-                queue.forEach((q, i) => {
-                    const d = document.createElement('div'); d.className = 'cm-item' + (q.state === 'error' ? ' err' : '');
-                    const m = document.createElement(q.kind === 'image' ? 'img' : 'video'); m.src = q.url; if (q.kind === 'video') { m.muted = true; m.preload = 'metadata'; } else m.alt = q.file.name;
-                    d.append(m);
-                    if (q.state === 'ready' && !uploading) { const x = document.createElement('button'); x.type = 'button'; x.className = 'rm'; x.textContent = '×'; x.setAttribute('aria-label', 'Remove ' + q.file.name); x.addEventListener('click', () => { queue.splice(i, 1); renderQueue(); refresh(); }); d.append(x); }
-                    if (q.state !== 'ready') { const st = document.createElement('span'); st.className = 'st'; st.textContent = q.state === 'done' ? 'Sent ✓' : q.state === 'error' ? 'Failed' : Math.round(q.pct || 0) + '%'; d.append(st); }
-                    if (q.state === 'up') { const bar = document.createElement('div'); bar.className = 'bar'; bar.innerHTML = '<i style="width:' + (q.pct || 0) + '%"></i>'; d.append(bar); }
-                    queueEl.append(d);
-                });
-            }
-            function sendOne(q) {
-                return new Promise(resolve => {
-                    const fd = new FormData(); fd.append('file', q.file); fd.append('upload_preset', UPLOAD_PRESET);
-                    const x = new XMLHttpRequest();
-                    x.open('POST', API + '/v1_1/' + encodeURIComponent(CLOUD_NAME) + '/auto/upload');
-                    x.upload.onprogress = e => { if (e.lengthComputable) { q.pct = e.loaded / e.total * 100; renderQueue(); } };
-                    x.onload = () => { try { const r = JSON.parse(x.responseText); if (x.status >= 200 && x.status < 300 && r.secure_url) return resolve(r); } catch (e) {} resolve(null); };
-                    x.onerror = () => resolve(null);
-                    q.state = 'up'; q.pct = 0; renderQueue(); x.send(fd);
-                });
-            }
-            async function run() {
-                if (uploading || !queue.length || !consent.checked) return;
-                uploading = true; refresh(); say('Uploading…');
-                // simple client-side throttle (not a security control, the real limits live in your Cloudinary preset)
-                let ok = 0, bad = 0, store = sget();
-                for (const q of queue) {
-                    const r = await sendOne(q);
-                    if (r) { q.state = 'done'; ok++; store.unshift({ t: r.resource_type === 'video' ? 'video' : 'image', u: r.secure_url, id: r.public_id }); }
-                    else { q.state = 'error'; bad++; }
-                    renderQueue();
-                }
-                sset(store); uploading = false;
-                queue = queue.filter(q => q.state === 'error'); queue.forEach(q => { q.state = 'ready'; });
-                if (ok) say('✓ ' + ok + ' file' + (ok > 1 ? 's' : '') + ' sent! They will appear in the gallery after approval.' + (bad ? ' ' + bad + ' failed, try again.' : ''), 'ok');
-                else say('Upload failed. Check your connection and try again.', 'bad');
-                setTimeout(() => { renderQueue(); refresh(); }, 900);
-                renderMine();
-            }
-
-            /* gallery + lightbox */
-            function thumb(it) {
-                if (it.thumb) return it.thumb;
-                return it.t === 'video' ? it.u.replace('/upload/', '/upload/so_0,c_limit,w_600,q_auto,f_jpg/').replace(/\.[a-z0-9]+$/i, '.jpg') : it.u.replace('/upload/', '/upload/c_limit,w_600,q_auto,f_auto/');
-            }
-            function tile(it, list, pending) {
-                const b = document.createElement('button'); b.type = 'button'; b.className = 'tile';
-                b.setAttribute('aria-label', 'Open ' + (it.t === 'video' ? 'video' : 'photo'));
-                const im = document.createElement('img'); im.loading = 'lazy'; im.alt = ''; im.src = thumb(it); im.onerror = () => { im.style.visibility = 'hidden'; }; b.append(im);
-                if (it.t === 'video') { const v = document.createElement('span'); v.className = 'vb'; v.innerHTML = PLAY + 'Video'; b.append(v); }
-                if (pending) { const p = document.createElement('span'); p.className = 'pend'; p.textContent = 'Pending'; b.append(p); }
-                b.addEventListener('click', () => openLb(list, list.indexOf(it)));
-                return b;
-            }
-            function renderMine() { const m = sget(); mine.innerHTML = ''; mineTitle.hidden = !m.length; m.forEach(it => mine.append(tile(it, m, true))); }
-            async function loadGallery() {
-                if (!ON) return;
-                const out = [];
-                for (const type of ['image', 'video']) {
-                    try {
-                        const r = await fetch(CDN + '/' + encodeURIComponent(CLOUD_NAME) + '/' + type + '/list/' + encodeURIComponent(SHOW_TAG) + '.json', { cache: 'no-store' });
-                        if (!r.ok) continue; const d = await r.json();
-                        (d.resources || []).forEach(x => out.push({ t: type, u: CDN + '/' + CLOUD_NAME + '/' + type + '/upload/v' + x.version + '/' + x.public_id + '.' + (x.format || (type === 'video' ? 'mp4' : 'jpg')), at: x.created_at || '' }));
-                    } catch (e) {}
-                }
-                out.sort((a, b) => String(b.at).localeCompare(String(a.at)));
-                gallery = out; grid.innerHTML = ''; out.slice(0, 60).forEach(it => grid.append(tile(it, gallery, false)));
-            }
-
-            const lb = document.getElementById('lightbox'), stage = document.getElementById('lbStage');
-            let lbList = [], lbI = 0, lastFocus = null;
-            function showLb() {
-                const it = lbList[lbI]; stage.innerHTML = '';
-                if (!it) return;
-                const el = document.createElement(it.t === 'video' ? 'video' : 'img');
-                if (it.t === 'video') { el.controls = true; el.autoplay = true; el.playsInline = true; el.src = it.u; } else { el.src = it.u; el.alt = 'Community photo'; }
-                stage.append(el);
-                document.getElementById('lbP').style.display = document.getElementById('lbN').style.display = lbList.length > 1 ? 'flex' : 'none';
-            }
-            function openLb(list, i) { lbList = list; lbI = Math.max(0, i); lastFocus = document.activeElement; lb.classList.add('open'); showLb(); document.getElementById('lbX').focus(); }
-            function closeLb() { lb.classList.remove('open'); stage.innerHTML = ''; if (lastFocus && lastFocus.focus) lastFocus.focus(); }
-            document.getElementById('lbX').addEventListener('click', closeLb);
-            document.getElementById('lbP').addEventListener('click', () => { lbI = (lbI - 1 + lbList.length) % lbList.length; showLb(); });
-            document.getElementById('lbN').addEventListener('click', () => { lbI = (lbI + 1) % lbList.length; showLb(); });
-            lb.addEventListener('click', e => { if (e.target === lb) closeLb(); });
-            document.addEventListener('keydown', e => {
-                if (!lb.classList.contains('open')) return;
-                if (e.key === 'Escape') closeLb(); else if (e.key === 'ArrowLeft') document.getElementById('lbP').click(); else if (e.key === 'ArrowRight') document.getElementById('lbN').click();
+            idea.addEventListener('input', () => { sync(); if (status.classList.contains('bad')) say(''); });
+            form.addEventListener('submit', async e => {
+                e.preventDefault(); if (busy) return;
+                const text = idea.value.trim(); if (text.length < 10) { say('Please write at least a short sentence (10+ characters).', 'bad'); return; }
+                const now = Date.now(), log = (get('sb-log') || '').split(',').map(Number).filter(t => now - t < 86400000);
+                if (now - (log[log.length - 1] || 0) < 20000) { say('Please wait a few seconds before sending another.', 'bad'); return; }
+                if (log.length >= 5) { say('You have reached today’s limit of 5 suggestions. Thank you! Come back tomorrow.', 'bad'); return; }
+                busy = true; sync(); say('Sending…');
+                const cat = (form.querySelector('input[name="sbCat"]:checked') || {}).value || 'Other';
+                try {
+                    const r = await fetch('/api/suggest', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ category: cat, idea: text, name: nameEl.value.trim(), website: hp.value }) });
+                    let d = {}; try { d = await r.json(); } catch (x) {}
+                    if (!r.ok) throw new Error(r.status === 404 ? 'The suggestion box is not connected yet. (The site owner needs to deploy the /api folder.)' : (d.error || 'Could not send. Please try again.'));
+                    log.push(now); put('sb-log', log.join(','));
+                    const m = mine(); m.unshift({ c: cat, i: text.slice(0, 200), t: now }); put('sb-mine', JSON.stringify(m.slice(0, 5)));
+                    idea.value = ''; renderMine(); say('✓ Thank you! Your idea was sent. I read every one.', 'ok');
+                } catch (err) { say(err && err.message ? err.message : 'Could not reach the suggestion box. Please try again.', 'bad'); }
+                busy = false; sync();
             });
-
-            drop.addEventListener('click', () => { if (ON) fileIn.click(); });
-            drop.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && ON) { e.preventDefault(); fileIn.click(); } });
-            fileIn.addEventListener('change', () => { addFiles(fileIn.files); fileIn.value = ''; });
-            ['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); if (ON) drop.classList.add('drag'); }));
-            ['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('drag'); if (ev === 'drop') addFiles(e.dataTransfer.files); }));
-            consent.addEventListener('change', refresh);
-            submit.addEventListener('click', run);
-            document.querySelectorAll('#community [data-terms]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); openTerms(a.dataset.terms); }));
-            renderMine(); loadGallery();
+            document.querySelectorAll('#suggest [data-terms]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); openTerms(a.dataset.terms); }));
+            renderMine(); sync();
         })();
 
         /* ---------- Left slide-out menu ---------- */
@@ -2092,5 +1980,8 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
         }
         window.addEventListener('load', fetchYouTubeContent);
     </script>
+    <!-- Vercel Web Analytics (cookie-free visitor counts; shows data once enabled in the Vercel dashboard) -->
+    <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+    <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
