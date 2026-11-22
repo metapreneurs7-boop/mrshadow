@@ -50,7 +50,7 @@ function render() {
     const idea = document.createElement('div'); idea.className = 'idea'; idea.textContent = it.idea;
     const act = document.createElement('div'); act.className = 'act';
     const del = document.createElement('button'); del.className = 'no'; del.textContent = 'Delete';
-    del.onclick = async () => { if (!confirm('Delete this suggestion?')) return; del.disabled = true; try { await api('POST', { action: 'delete', url: it.url }); items = items.filter((x) => x !== it); render(); } catch (e) { say(e.message, true); del.disabled = false; } };
+    del.onclick = async () => { if (!confirm('Delete this suggestion?')) return; del.disabled = true; try { await api('POST', { action: 'delete', path: it.path }); items = items.filter((x) => x !== it); render(); } catch (e) { say(e.message, true); del.disabled = false; } };
     act.append(del); c.append(top, idea, act); box.append(c);
   });
 }
