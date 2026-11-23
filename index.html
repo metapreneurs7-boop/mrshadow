@@ -697,26 +697,6 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
                 </div>
             </div>
         </div>
-    </section>
-
-    <!-- GALLERY -->
-    <section id="gallery">
-        <div class="section-header reveal">
-            <span class="tag">02 &mdash; Gallery</span>
-            <h2>Mr.neo</h2>
-            <p style="color: var(--text-dim)">Latest Uploads from Instagram</p>
-        </div>
-
-        <div class="insta-embed-wrapper reveal">
-            <!-- Elfsight Instagram Feed | Untitled Instagram Feed -->
-            <script src="https://elfsightcdn.com/platform.js" async></script>
-            <div class="elfsight-app-eeb117d7-c1cf-4dc5-aba1-36e65acf1164" data-elfsight-app-lazy></div>
-        </div>
-        <div style="text-align: center;">
-            <a href="https://www.instagram.com/mr.neo_41?stkn=MWpyb3J6Nzh3NWxiYQ==" target="_blank" rel="noopener" class="btn btn-outline">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg> View Full Gallery on IG
-            </a>
-        </div>
 
         <div class="suggest reveal" id="suggest">
             <div class="suggest-head">
@@ -745,6 +725,26 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
                 <p class="sb-note">Please don't include passwords or private details. By sending, you agree to our <a data-terms="privacy">Privacy Policy</a>. Share-market ideas are for education only, never financial advice.</p>
             </form>
             <div class="sb-recent" id="sbRecent" hidden><h4>Your recent suggestions</h4><ul id="sbList"></ul></div>
+        </div>
+    </section>
+
+    <!-- GALLERY -->
+    <section id="gallery">
+        <div class="section-header reveal">
+            <span class="tag">02 &mdash; Gallery</span>
+            <h2>Mr.neo</h2>
+            <p style="color: var(--text-dim)">Latest Uploads from Instagram</p>
+        </div>
+
+        <div class="insta-embed-wrapper reveal">
+            <!-- Elfsight Instagram Feed | Untitled Instagram Feed -->
+            <script src="https://elfsightcdn.com/platform.js" async></script>
+            <div class="elfsight-app-eeb117d7-c1cf-4dc5-aba1-36e65acf1164" data-elfsight-app-lazy></div>
+        </div>
+        <div style="text-align: center;">
+            <a href="https://www.instagram.com/mr.neo_41?stkn=MWpyb3J6Nzh3NWxiYQ==" target="_blank" rel="noopener" class="btn btn-outline">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg> View Full Gallery on IG
+            </a>
         </div>
     </section>
 
@@ -1067,7 +1067,20 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
             // Set a spend limit on the key at openrouter.ai/settings/keys and rotate it if it ever leaks.
             const OPENROUTER_KEY = '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';
             const AI_MODEL = 'openai/gpt-4o-mini';   // any model id from openrouter.ai/models
-            const SYSTEM_PROMPT = "You are the friendly assistant on the website of MRSHADOW (Yogesh Pawar), an Indian creator who makes Tech, Share Market and Life vlog videos on YouTube. Be concise (under 120 words), warm and helpful. Share-market content is education only, never financial advice. Social: Instagram @yogeshpawar.45 and @mr.neo_41, X @YogeshPawar455. The site is A Yogeshpawar Production.";
+            const SYSTEM_PROMPT = [
+                "You are MRSHADOW AI, the helpful assistant on the website of MRSHADOW (Yogesh Pawar), an Indian creator who makes Tech, Share Market and Life vlog videos on YouTube. The site is 'A Yogeshpawar Production'.",
+                "You can answer ANY question the visitor asks, not only about the website: general knowledge, technology, coding, study help, careers, writing, maths, health and lifestyle basics, and share-market concepts. Answer directly and accurately.",
+                "Style: friendly, clear and practical. Match the visitor's language (English, Hindi or Hinglish). Keep simple answers short (a few sentences); for how-to or complex questions give a structured answer with short steps or bullet points, up to about 250 words. Use **bold** for key terms. If you are unsure, say so instead of guessing, and never invent facts, links or numbers.",
+                "Share-market and money topics are education only: explain concepts and risks, never tell anyone to buy or sell a specific stock, and remind them to consult a SEBI-registered advisor for personal decisions.",
+                "For medical, legal or safety questions give general information and suggest a professional. Refuse anything harmful or illegal in a polite way.",
+                "About the creator: YouTube channel link and socials are on the site. Instagram: @yogeshpawar.45 and @mr.neo_41. X: @YogeshPawar455. For collaborations people should message on Instagram. Visitors can suggest video ideas in the Suggestion Box in the Gallery section of the site. Do not claim to know private details about the creator beyond this.",
+                "If the visitor attaches photos, describe and answer about them. For videos you only see a few sampled frames."
+            ].join(' ');
+            function systemPrompt() {
+                let extra = '';
+                try { const v = window.__latestVideos; if (v && v.length) extra = ' Latest uploads on the channel right now: ' + v.slice(0, 5).map(x => '"' + String(x.title || '').replace(/\s+/g, ' ').slice(0, 90) + '"').join('; ') + '. Only mention these if the visitor asks about videos.'; } catch (e) {}
+                return SYSTEM_PROMPT + extra;
+            }
             // Optional: your own backend instead (POST {messages} -> {reply}). Takes priority over the key above.
             const CHAT_API_URL = window.MRSHADOW_CHAT_API || '';
 
@@ -1359,16 +1372,16 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
                     return "You can read the legal pages here:\n• [Terms & Conditions](#terms)\n• [Privacy Policy](#privacy)\n• [Disclaimer](#disclaimer)";
                 if (has(/(dark|light|theme|3d|lag|laggy|slow|fish|water|animation|effect|menu|button)/))
                     return "Website tips 🛠️\n• The **moon/sun button** switches dark and light mode.\n• The **3D button** turns the underwater scene off. Use it if the page feels slow.\n• The **menu button** (top left) jumps to Home, Gallery, Videos, About and Terms.";
-                if (has(/(who|made|built|created|developer|yogesh|production|website|site)/))
+                if (has(/(who (?:made|built|created|runs|is (?:yogesh|mrshadow|behind))|developer|yogesh|production|this (?:website|site))/))
                     return "This site is **A Yogeshpawar Production** 🎥\nFollow along on Instagram: [@yogeshpawar.45](" + IG2 + ")";
-                if (has(/(about|what|channel|content|topic|tech|vlog|market|do you|make)/))
+                if (has(/(about (?:you|the channel|mrshadow)|what (?:do|does) (?:you|he|mrshadow) (?:make|do|post)|what do you make|your channel|the channel|your content|\bvlogs?\b)/))
                     return "**MRSHADOW** is a content channel about:\n• 💻 **Tech** — updates and ideas in technology\n• 📈 **Markets** — share-market insights (education only)\n• 🎬 **Vlogs** — daily life and trending topics\nEverything is made for curious minds who like to learn, grow and enjoy. [Subscribe here](" + SUB + ").";
-                return "I'm not sure about that one yet 🤔\nI can help with the **channel**, **latest videos**, **collaborations**, **social links** and **website help**. Try one of the suggestions below, or ask in a different way!";
+                return "I couldn't reach my AI brain just now, so I can only answer questions about this site 🤔\nI can help with the **channel**, **latest videos**, **collaborations**, **social links** and **website help**. Please try your question again in a moment!";
             }
 
             async function getReply(text, atts) {
                 atts = atts || [];
-                const msgs = history.slice(-12).map(m => ({ role: m.role === 'bot' ? 'assistant' : 'user', content: m.text }));
+                const msgs = history.slice(-16).map(m => ({ role: m.role === 'bot' ? 'assistant' : 'user', content: m.text }));
                 const parts = [], notes = [];
                 atts.forEach(a => {
                     if (a.kind === 'image' && a.data) { parts.push(a.data); notes.push('Image "' + a.name + '" is attached.'); }
@@ -1390,16 +1403,16 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
                         if (CHAT_API_URL) {
                             r = await fetch(CHAT_API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: ctl.signal, body: JSON.stringify({ messages: msgs }) });
                             d = await r.json();
-                            if (d && typeof d.reply === 'string' && d.reply.trim()) return d.reply.trim().slice(0, 2000);
+                            if (d && typeof d.reply === 'string' && d.reply.trim()) return d.reply.trim().slice(0, 4000);
                         } else {
                             r = await fetch('https://openrouter.ai/api/v1/chat/completions', {
                                 method: 'POST', signal: ctl.signal,
                                 headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + OPENROUTER_KEY },
-                                body: JSON.stringify({ model: AI_MODEL, max_tokens: 400, messages: [{ role: 'system', content: SYSTEM_PROMPT }].concat(msgs) })
+                                body: JSON.stringify({ model: AI_MODEL, max_tokens: 900, temperature: 0.6, messages: [{ role: 'system', content: systemPrompt() }].concat(msgs) })
                             });
                             d = await r.json();
                             const out = d && d.choices && d.choices[0] && d.choices[0].message && d.choices[0].message.content;
-                            if (typeof out === 'string' && out.trim()) return out.trim().slice(0, 2000);
+                            if (typeof out === 'string' && out.trim()) return out.trim().slice(0, 4000);
                         }
                     } catch (e) { /* fall back to built-in answers */ }
                     finally { clearTimeout(t); }
@@ -1464,8 +1477,8 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
                 if (Array.isArray(saved) && saved.length) {
                     saved.forEach(m => {
                         if (m && (m.role === 'user' || m.role === 'bot') && typeof m.text === 'string') {
-                            history.push({ role: m.role, text: m.text.slice(0, 2000), t: m.t });
-                            addMessage(m.role, m.text.slice(0, 2000), { instant: true, t: m.t });
+                            history.push({ role: m.role, text: m.text.slice(0, 4000), t: m.t });
+                            addMessage(m.role, m.text.slice(0, 4000), { instant: true, t: m.t });
                         }
                     });
                     if (history.length) { setChips('dflt'); }
