@@ -1,19 +1,25 @@
-MRSHADOW site backend (Vercel) - suggestion box + AI chat
+MRSHADOW site backend (Vercel): suggestion box + AI chat + saved chats with Google sign-in
 
-FILES
-  api/chat.js         AI chat (keeps your OpenRouter key secret on the server)  <-- NEW
-  api/suggest.js      receives visitor suggestions
-  api/suggestions.js  lists/deletes suggestions for admin.html
-  admin.html          your private page to read suggestions
+FILES (keep the folders exactly like this in your GitHub repo root)
+  index.html
+  admin.html
   package.json
+  api/chat.js          AI chat (OpenRouter key stays on the server)
+  api/suggest.js       visitor suggestions
+  api/suggestions.js   admin list of suggestions
+  api/auth.js          NEW: verifies "Sign in with Google"
+  api/sync.js          NEW: saves/loads each person's chats and projects (private Blob)
+  lib/session.js       NEW: signed session tokens
 
-SETUP
-1. Copy these files into the root of your GitHub repo (api folder stays at the top level) along with the new index.html. Commit.
-2. Vercel > your project > Settings > Environment Variables, add:
-     OPENROUTER_API_KEY = a NEW key from openrouter.ai/settings/keys   (set a spend limit on it)
-     ADMIN_KEY          = your private admin password
-   (BLOB_READ_WRITE_TOKEN is added automatically when the Blob store is connected.)
-3. Deployments > Redeploy.
-4. NEVER put the OpenRouter key inside index.html again.
+VERCEL ENVIRONMENT VARIABLES
+  OPENROUTER_API_KEY   your OpenRouter key
+  ADMIN_KEY            password for /admin.html
+  GOOGLE_CLIENT_ID     NEW: from Google Cloud (OAuth Client ID, ends with .apps.googleusercontent.com)
+  SESSION_SECRET       NEW: any long random text, 32+ characters (make one up; keep it private)
+  BLOB_READ_WRITE_TOKEN  (added automatically by the Blob store)
 
-OPTIONAL: AI_MODEL environment variable to change the model (default openai/gpt-4o-mini, it must accept images).
+ALSO: in index.html set   const GOOGLE_CLIENT_ID = 'your-client-id.apps.googleusercontent.com';
+(this one is public by design, it is safe in the page)
+
+Saved chats and projects work on the same device even without Google sign-in.
+Sign-in is only needed to open them on other devices.

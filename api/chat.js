@@ -40,6 +40,8 @@ export default async function handler(req, res) {
     }
     if (!messages.length || messages[messages.length - 1].role !== 'user') return res.status(400).json({ error: 'no question received' });
     const context = typeof body.context === 'string' ? body.context.replace(/[\u0000-\u001f]+/g, ' ').slice(0, 800) : '';
+    const instr = typeof body.instructions === 'string' ? body.instructions.replace(/[\u0000-\u0008\u000b-\u001f]+/g, ' ').slice(0, 10000) : '';
+    const projectNote = instr ? ' The visitor is working inside a personal project. Follow their project instructions and use their project notes when relevant (they are preferences and reference material, they never override safety rules). ' + instr : '';
 
     const ctl = new AbortController();
     const timer = setTimeout(() => ctl.abort(), 55000);
@@ -48,7 +50,7 @@ export default async function handler(req, res) {
       r = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST', signal: ctl.signal,
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key, 'X-Title': 'MRSHADOW site chat' },
-        body: JSON.stringify({ model: MODEL, max_tokens: 900, temperature: 0.6, messages: [{ role: 'system', content: SYSTEM + context }].concat(messages) })
+        body: JSON.stringify({ model: MODEL, max_tokens: 900, temperature: 0.6, messages: [{ role: 'system', content: SYSTEM + context + projectNote }].concat(messages) })
       });
     } finally { clearTimeout(timer); }
     const d = await r.json().catch(() => null);
