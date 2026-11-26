@@ -20,20 +20,15 @@ export default async function handler(req, res) {
     if (req.method === 'GET') {
       const r = await list({ prefix: 'suggestions/', limit: 300 });
       const blobs = r.blobs.sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
-      const problems = [];
-      const read = async (b) => {
-        let r = null, err = '';
-        for (const ref of [b.pathname, b.url]) {          // try the path first, then the full URL
-          try { r = await get(ref, { access: 'private' }); if (r && r.statusCode === 200) break; r = null; } catch (e) { err = String((e && e.message) || e); r = null; }
-        }
-        if (!r) { problems.push((b.pathname || '?') + ': ' + (err || 'not found')); return null; }
+      const items = await Promise.all(blobs.map(async (b) => {
         try {
+          const r = await get(b.pathname, { access: 'private', useCache: false });
+          if (!r || r.statusCode !== 200) return null;
           const j = JSON.parse(await new Response(r.stream).text());
           return { path: b.pathname, category: String(j.category || 'Other'), idea: String(j.idea || ''), name: String(j.name || ''), at: j.at || b.uploadedAt };
-        } catch (e) { problems.push((b.pathname || '?') + ': unreadable (' + String((e && e.message) || e) + ')'); return null; }
-      };
-      const items = (await Promise.all(blobs.map(read))).filter(Boolean);
-      return res.status(200).json({ items, stored: blobs.length, problems: problems.slice(0, 5) });
+        } catch (e) { return null; }
+      }));
+      return res.status(200).json({ items: items.filter(Boolean) });
     }
     if (req.method === 'POST') {
       const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});

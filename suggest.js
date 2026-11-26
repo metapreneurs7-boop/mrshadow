@@ -28,6 +28,12 @@ export default async function handler(req, res) {
     });
     return res.status(200).json({ ok: true });
   } catch (e) {
-    return res.status(500).json({ error: 'Suggestion box unavailable. Is a Blob store connected to this project?' });
+    const m = String((e && e.message) || '');
+    console.error('[suggest] failed:', m);
+    let why = 'Suggestion box unavailable. Please try again later.';
+    if (/credentials|token/i.test(m)) why = 'Suggestion box not set up: the Blob store is not connected to this project (BLOB_READ_WRITE_TOKEN is missing). Connect it in Vercel > Storage, then redeploy.';
+    else if (/private|public|access/i.test(m)) why = 'Suggestion box setup problem: the Blob store access type does not match. Make sure you uploaded the latest api/suggest.js and redeployed.';
+    else if (/Cannot find|Cannot resolve|ERR_MODULE/i.test(m)) why = 'Suggestion box setup problem: package.json (with @vercel/blob) is missing from the repository root. Add it and redeploy.';
+    return res.status(500).json({ error: why });
   }
 }

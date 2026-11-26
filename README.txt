@@ -1,10 +1,19 @@
-SUGGESTION BOX - setup (Vercel)
+MRSHADOW site backend (Vercel) - suggestion box + AI chat
 
-1. In your GitHub repo, delete the OLD upload files if they exist:
-   api/upload.js, api/gallery.js, api/moderate.js   (the site no longer uses them)
-2. Copy this pack into the repo root: api/suggest.js, api/suggestions.js, admin.html, package.json
-   (if you already have a package.json with @vercel/blob, keep yours).
-   Also replace index.html with the new one. Commit and push.
-3. Vercel dashboard > your project > Storage > connect (or create) a Blob store. A PRIVATE store (the default) is fine, this pack is built for it.
-4. Vercel > Settings > Environment Variables: add ADMIN_KEY = a long private password (12+ characters). Redeploy.
-5. Read suggestions at https://YOUR-SITE/admin.html  (enter the ADMIN_KEY).
+FILES
+  api/chat.js         AI chat (keeps your OpenRouter key secret on the server)  <-- NEW
+  api/suggest.js      receives visitor suggestions
+  api/suggestions.js  lists/deletes suggestions for admin.html
+  admin.html          your private page to read suggestions
+  package.json
+
+SETUP
+1. Copy these files into the root of your GitHub repo (api folder stays at the top level) along with the new index.html. Commit.
+2. Vercel > your project > Settings > Environment Variables, add:
+     OPENROUTER_API_KEY = a NEW key from openrouter.ai/settings/keys   (set a spend limit on it)
+     ADMIN_KEY          = your private admin password
+   (BLOB_READ_WRITE_TOKEN is added automatically when the Blob store is connected.)
+3. Deployments > Redeploy.
+4. NEVER put the OpenRouter key inside index.html again.
+
+OPTIONAL: AI_MODEL environment variable to change the model (default openai/gpt-4o-mini, it must accept images).
