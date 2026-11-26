@@ -464,6 +464,10 @@
         .att { position: relative; flex-shrink: 0; width: 56px; height: 56px; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: var(--chat-bot); }
         .att img, .att video { width: 100%; height: 100%; object-fit: cover; display: block; }
         .att .x { position: absolute; top: 2px; right: 2px; width: 18px; height: 18px; border-radius: 50%; border: none; background: rgba(0,0,0,0.75); color: #fff; font-size: 12px; line-height: 1; cursor: pointer; padding: 0; }
+        .att.doc { width: auto; min-width: 130px; max-width: 190px; height: 56px; display: flex; align-items: center; gap: 8px; padding: 0 22px 0 8px; }
+        .att.doc .ext { flex-shrink: 0; min-width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.03em; color: #fff; background: linear-gradient(135deg, var(--chat-a), var(--chat-b)); text-transform: uppercase; padding: 0 4px; }
+        .att.doc .dn { min-width: 0; font-size: 0.74rem; line-height: 1.25; } .att.doc .dn b { display: block; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .att.doc .dn span { color: var(--text-dim); font-size: 0.68rem; }
+        .bubble .thumbs .att.doc { width: auto; height: 56px; }
         .att .vb { position: absolute; left: 3px; bottom: 3px; font-size: 0.6rem; font-weight: 700; padding: 1px 5px; border-radius: 6px; background: rgba(0,0,0,0.7); color: #fff; }
         .bubble .thumbs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
         .bubble .thumbs .att { width: 92px; height: 92px; }
@@ -943,7 +947,7 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
             <div class="chat-strip" id="chatStrip"></div>
             <form class="chat-form" id="chatForm" autocomplete="off">
                 <button type="button" class="chat-attach" id="chatAttach" aria-label="Attach a photo or video" title="Attach photo or video"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5l-8.6 8.6a5 5 0 0 1-7.1-7.1l8.6-8.6a3.3 3.3 0 0 1 4.7 4.7l-8.6 8.6a1.7 1.7 0 0 1-2.4-2.4l7.9-7.9"/></svg></button>
-                <input type="file" id="chatFile" accept="image/*,video/*" multiple hidden>
+                <input type="file" id="chatFile" accept="image/*,video/*,.pdf,.docx,.pptx,.xlsx,.xls,.csv,.tsv,.txt,.md,.json,.xml,.html,.htm,.css,.js,.ts,.py,.java,.c,.cpp,.h,.sql,.log,.yaml,.yml,.ini" multiple hidden>
                 <textarea id="chatInput" rows="1" maxlength="500" placeholder="Ask anything..." aria-label="Your message"></textarea>
                 <button type="submit" id="chatSend" aria-label="Send message" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
             </form>
@@ -1063,9 +1067,8 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
         /* ---------- AI chat assistant ---------- */
         (function () {
             // ---- AI SETTINGS ----
-            // Paste your OpenRouter key between the quotes. WARNING: anyone who opens this page can read it.
-            // Set a spend limit on the key at openrouter.ai/settings/keys and rotate it if it ever leaks.
-            const OPENROUTER_KEY = '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';
+            // The AI key is NOT stored in this page. The chat calls /api/chat, which uses OPENROUTER_API_KEY from your Vercel settings.
+            const OPENROUTER_KEY = '';   // leave empty: the key now lives safely on the server (Vercel environment variable OPENROUTER_API_KEY)
             const AI_MODEL = 'openai/gpt-4o-mini';   // any model id from openrouter.ai/models
             const SYSTEM_PROMPT = [
                 "You are MRSHADOW AI, the helpful assistant on the website of MRSHADOW (Yogesh Pawar), an Indian creator who makes Tech, Share Market and Life vlog videos on YouTube. The site is 'A Yogeshpawar Production'.",
@@ -1074,15 +1077,16 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
                 "Share-market and money topics are education only: explain concepts and risks, never tell anyone to buy or sell a specific stock, and remind them to consult a SEBI-registered advisor for personal decisions.",
                 "For medical, legal or safety questions give general information and suggest a professional. Refuse anything harmful or illegal in a polite way.",
                 "About the creator: YouTube channel link and socials are on the site. Instagram: @yogeshpawar.45 and @mr.neo_41. X: @YogeshPawar455. For collaborations people should message on Instagram. Visitors can suggest video ideas in the Suggestion Box in the Gallery section of the site. Do not claim to know private details about the creator beyond this.",
-                "If the visitor attaches photos, describe and answer about them. For videos you only see a few sampled frames."
+                "If the visitor attaches photos, describe and answer about them. For videos you only see a few sampled frames. If a document is attached, its extracted text is included in the message between markers; read it carefully, answer questions about it, and if there is no question give a short summary with key points. Say so when the text looks incomplete or cut off."
             ].join(' ');
-            function systemPrompt() {
+            function videosContext() {
                 let extra = '';
                 try { const v = window.__latestVideos; if (v && v.length) extra = ' Latest uploads on the channel right now: ' + v.slice(0, 5).map(x => '"' + String(x.title || '').replace(/\s+/g, ' ').slice(0, 90) + '"').join('; ') + '. Only mention these if the visitor asks about videos.'; } catch (e) {}
-                return SYSTEM_PROMPT + extra;
+                return extra;
             }
+            function systemPrompt() { return SYSTEM_PROMPT + videosContext(); }
             // Optional: your own backend instead (POST {messages} -> {reply}). Takes priority over the key above.
-            const CHAT_API_URL = window.MRSHADOW_CHAT_API || '';
+            const CHAT_API_URL = window.MRSHADOW_CHAT_API || (/^https?:$/.test(location.protocol) ? '/api/chat' : '');
 
             const fab = document.getElementById('chatBtn'), panel = document.getElementById('chatPanel');
             const log = document.getElementById('chatLog'), form = document.getElementById('chatForm');
@@ -1119,7 +1123,73 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
             function sset(k, v) { try { sessionStorage.setItem(k, v); } catch (e) {} }
             function save() { sset('mrs-chat', JSON.stringify(history.slice(-30))); }
             const wait = ms => new Promise(r => setTimeout(r, ms));
-            const MAX_ATT = 4, MAX_IMG_MB = 10, MAX_VID_MB = 50;
+            const MAX_ATT = 4, MAX_IMG_MB = 10, MAX_VID_MB = 50, MAX_DOC_MB = 15, DOC_CHARS = 24000, ALL_DOC_CHARS = 48000;
+            let docMem = [];   // text of documents attached earlier in this chat, so follow-up questions still work
+            const TEXT_EXT = /^(txt|md|csv|tsv|json|xml|html|htm|css|js|ts|py|java|c|cpp|h|sql|log|yaml|yml|ini)$/;
+            const LIBS = {
+                pdf: ['https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js'],
+                zip: ['https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js'],
+                xlsx: ['https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js']
+            };
+            const libCache = {};
+            function loadLib(k) {
+                if (!libCache[k]) libCache[k] = LIBS[k].reduce((p, src) => p.then(() => new Promise((ok, no) => { const el = document.createElement('script'); el.src = src; el.onload = ok; el.onerror = () => no(new Error('Could not load the file reader. Check your internet connection.')); document.head.append(el); })), Promise.resolve()).catch(e => { delete libCache[k]; throw e; });
+                return libCache[k];
+            }
+            const fmtSize = n => n < 1048576 ? Math.max(1, Math.round(n / 1024)) + ' KB' : (n / 1048576).toFixed(1) + ' MB';
+            const xmlText = x => x.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, '&');
+            function tidy(t) { return t.replace(/\r/g, '').replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim(); }
+            async function readDoc(f, ext) {
+                const buf = () => f.arrayBuffer();
+                if (TEXT_EXT.test(ext)) return { text: tidy(await f.text()), pages: [], label: 'Text' };
+                if (ext === 'pdf') {
+                    await loadLib('pdf');
+                    const lib = window.pdfjsLib; lib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+                    const pdf = await lib.getDocument({ data: new Uint8Array(await buf()) }).promise;
+                    let text = '';
+                    for (let i = 1; i <= Math.min(pdf.numPages, 40) && text.length < DOC_CHARS * 1.5; i++) {
+                        const pg = await pdf.getPage(i), tc = await pg.getTextContent();
+                        text += '\n\n[Page ' + i + ']\n' + tc.items.map(it => it.str + (it.hasEOL ? '\n' : ' ')).join('');
+                    }
+                    const pages = [];
+                    if (text.replace(/\[Page \d+\]|\s/g, '').length < 80) {       // scanned PDF: no text, so show the AI the first pages as pictures
+                        for (let i = 1; i <= Math.min(pdf.numPages, 3); i++) {
+                            const pg = await pdf.getPage(i), vp0 = pg.getViewport({ scale: 1 }), sc = Math.min(2, 1000 / vp0.width), vp = pg.getViewport({ scale: sc });
+                            const c = document.createElement('canvas'); c.width = Math.round(vp.width); c.height = Math.round(vp.height);
+                            await pg.render({ canvasContext: c.getContext('2d'), viewport: vp }).promise; pages.push(c.toDataURL('image/jpeg', 0.7));
+                        }
+                    }
+                    return { text: tidy(text), pages: pages, label: pdf.numPages + (pdf.numPages === 1 ? ' page' : ' pages') };
+                }
+                if (ext === 'docx' || ext === 'pptx') {
+                    await loadLib('zip');
+                    const z = await window.JSZip.loadAsync(await buf());
+                    if (ext === 'docx') {
+                        const x = z.file('word/document.xml'); if (!x) throw new Error('This does not look like a valid .docx file.');
+                        const xml = await x.async('string');
+                        return { text: tidy(xmlText(xml.replace(/<\/w:p>/g, '\n').replace(/<w:tab\/>/g, '\t').replace(/<w:br[^>]*\/>/g, '\n').replace(/<[^>]+>/g, ''))), pages: [], label: 'Word' };
+                    }
+                    const names = Object.keys(z.files).filter(n => /^ppt\/slides\/slide\d+\.xml$/.test(n)).sort((a, b) => parseInt(a.match(/\d+/)[0]) - parseInt(b.match(/\d+/)[0]));
+                    let out = '';
+                    for (let i = 0; i < names.length; i++) { const xml = await z.file(names[i]).async('string'); out += '\n\n[Slide ' + (i + 1) + ']\n' + xmlText(xml.replace(/<\/a:p>/g, '\n').replace(/<[^>]+>/g, '')); }
+                    return { text: tidy(out), pages: [], label: names.length + ' slides' };
+                }
+                if (ext === 'xlsx' || ext === 'xls') {
+                    await loadLib('xlsx');
+                    const wb = window.XLSX.read(await buf(), { type: 'array' });
+                    const out = wb.SheetNames.slice(0, 6).map(n => '[Sheet: ' + n + ']\n' + window.XLSX.utils.sheet_to_csv(wb.Sheets[n])).join('\n\n');
+                    return { text: tidy(out), pages: [], label: wb.SheetNames.length + (wb.SheetNames.length === 1 ? ' sheet' : ' sheets') };
+                }
+                throw new Error('unsupported');
+            }
+            function fillTile(d, a) {
+                if (a.kind === 'doc') {
+                    d.classList.add('doc');
+                    const e = document.createElement('span'); e.className = 'ext'; e.textContent = a.ext || 'file'; d.append(e);
+                    const n = document.createElement('div'); n.className = 'dn'; const b = document.createElement('b'); b.textContent = a.name; const sp = document.createElement('span'); sp.textContent = a.label + ' · ' + fmtSize(a.size); n.append(b, sp); d.append(n);
+                } else if (a.kind === 'image') { const im = document.createElement('img'); im.src = a.url; im.alt = a.name; d.append(im); }
+                else { const v = document.createElement('video'); v.src = a.url; v.muted = true; v.preload = 'metadata'; d.append(v); const b = document.createElement('span'); b.className = 'vb'; b.textContent = 'VIDEO'; d.append(b); }
+            }
             const attachments = [];   // {kind:'image'|'video', name, url (preview), data (downscaled jpeg dataURL for images)}
             const strip = document.getElementById('chatStrip'), attachBtn = document.getElementById('chatAttach'), fileIn = document.getElementById('chatFile');
             function downscale(file) {
@@ -1165,8 +1235,7 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
                 strip.innerHTML = '';
                 attachments.forEach((a, idx) => {
                     const d = document.createElement('div'); d.className = 'att';
-                    if (a.kind === 'image') { const im = document.createElement('img'); im.src = a.url; im.alt = a.name; d.append(im); }
-                    else { const v = document.createElement('video'); v.src = a.url; v.muted = true; v.preload = 'metadata'; d.append(v); const b = document.createElement('span'); b.className = 'vb'; b.textContent = 'VIDEO'; d.append(b); }
+                    fillTile(d, a);
                     const x = document.createElement('button'); x.type = 'button'; x.className = 'x'; x.textContent = '×'; x.setAttribute('aria-label', 'Remove ' + a.name);
                     x.addEventListener('click', () => { attachments.splice(idx, 1); renderStrip(); syncInput(); });
                     d.append(x); strip.append(d);
@@ -1175,18 +1244,30 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
             async function addFiles(list) {
                 for (const f of Array.from(list)) {
                     if (attachments.length >= MAX_ATT) { flash('You can attach up to ' + MAX_ATT + ' files per message.'); break; }
+                    const ext = ((f.name.match(/\.([A-Za-z0-9]+)$/) || [])[1] || '').toLowerCase();
                     const isImg = /^image\//.test(f.type), isVid = /^video\//.test(f.type);
-                    if (!isImg && !isVid) { flash('Only photos and videos can be attached.'); continue; }
-                    if (f.size > (isImg ? MAX_IMG_MB : MAX_VID_MB) * 1048576) { flash(f.name + ' is too large (max ' + (isImg ? MAX_IMG_MB : MAX_VID_MB) + ' MB).'); continue; }
+                    const isDoc = !isImg && !isVid && (TEXT_EXT.test(ext) || /^(pdf|docx|pptx|xlsx|xls)$/.test(ext));
+                    if (!isImg && !isVid && !isDoc) { flash(/^(doc|ppt|rtf|odt)$/.test(ext) ? 'Old .' + ext + ' files are not supported. Save it as .docx or PDF.' : 'This file type is not supported. Try PDF, Word, Excel, PowerPoint, text, a photo or a video.'); continue; }
+                    const lim = isImg ? MAX_IMG_MB : isVid ? MAX_VID_MB : MAX_DOC_MB;
+                    if (f.size > lim * 1048576) { flash(f.name + ' is too large (max ' + lim + ' MB).'); continue; }
                     if (isImg) { const r = await downscale(f); if (!r) { flash('Could not read ' + f.name); continue; } attachments.push({ kind: 'image', name: f.name, url: r.preview, data: r.data }); }
-                    else { flash('Reading ' + f.name + '…'); const vu = URL.createObjectURL(f); attachments.push({ kind: 'video', name: f.name, url: vu, frames: await videoFrames(vu, 4) }); }
+                    else if (isVid) { flash('Reading ' + f.name + '…'); const vu = URL.createObjectURL(f); attachments.push({ kind: 'video', name: f.name, url: vu, frames: await videoFrames(vu, 4) }); }
+                    else {
+                        flash('Reading ' + f.name + '…');
+                        try {
+                            const r = await readDoc(f, ext);
+                            if (!r.text && !(r.pages && r.pages.length)) { flash('No readable text found in ' + f.name + '.'); continue; }
+                            attachments.push({ kind: 'doc', name: f.name, ext: ext, size: f.size, label: r.label, text: r.text, pages: r.pages || [] });
+                        } catch (e) { flash(e && e.message && e.message !== 'unsupported' ? e.message : 'Could not read ' + f.name + '.'); continue; }
+                    }
                 }
                 renderStrip(); syncInput(); input.focus({ preventScroll: true });
             }
-            function flash(msg) { countEl.hidden = false; countEl.textContent = msg; countEl.classList.add('warn'); setTimeout(() => { countEl.classList.remove('warn'); syncInput(); }, 3200); }
+            let flashUntil = 0;
+            function flash(msg) { flashUntil = Date.now() + 3200; countEl.hidden = false; countEl.textContent = msg; countEl.classList.add('warn'); setTimeout(() => { if (Date.now() >= flashUntil) { countEl.classList.remove('warn'); syncInput(); } }, 3250); }
             attachBtn.addEventListener('click', () => fileIn.click());
             fileIn.addEventListener('change', () => { addFiles(fileIn.files); fileIn.value = ''; });
-            input.addEventListener('paste', e => { const fs = Array.from((e.clipboardData && e.clipboardData.files) || []).filter(f => /^(image|video)\//.test(f.type)); if (fs.length) { e.preventDefault(); addFiles(fs); } });
+            input.addEventListener('paste', e => { const fs = Array.from((e.clipboardData && e.clipboardData.files) || []); if (fs.length) { e.preventDefault(); addFiles(fs); } });
             ['dragenter', 'dragover'].forEach(ev => panel.addEventListener(ev, e => { if (e.dataTransfer && Array.from(e.dataTransfer.types || []).indexOf('Files') > -1) { e.preventDefault(); panel.classList.add('dragover'); } }));
             ['dragleave', 'drop'].forEach(ev => panel.addEventListener(ev, e => { if (ev === 'drop') { e.preventDefault(); addFiles(e.dataTransfer.files); } panel.classList.remove('dragover'); }));
             function scroll(force) { const near = log.scrollHeight - log.scrollTop - log.clientHeight < 140; if (force || near) log.scrollTop = log.scrollHeight; }
@@ -1273,8 +1354,7 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
                     if (opts.atts && opts.atts.length) {
                         const th = document.createElement('div'); th.className = 'thumbs';
                         opts.atts.forEach(a => { const d = document.createElement('div'); d.className = 'att';
-                            if (a.kind === 'image') { const im = document.createElement('img'); im.src = a.url; im.alt = a.name; d.append(im); }
-                            else { const v = document.createElement('video'); v.src = a.url; v.muted = true; v.preload = 'metadata'; d.append(v); const b = document.createElement('span'); b.className = 'vb'; b.textContent = 'VIDEO'; d.append(b); }
+                            fillTile(d, a);
                             th.append(d); });
                         bub.append(th);
                     }
@@ -1382,45 +1462,71 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
             async function getReply(text, atts) {
                 atts = atts || [];
                 const msgs = history.slice(-16).map(m => ({ role: m.role === 'bot' ? 'assistant' : 'user', content: m.text }));
-                const parts = [], notes = [];
+                const parts = [], notes = [], docs = atts.filter(a => a.kind === 'doc');
+                let budget = ALL_DOC_CHARS, docText = '';
                 atts.forEach(a => {
                     if (a.kind === 'image' && a.data) { parts.push(a.data); notes.push('Image "' + a.name + '" is attached.'); }
                     else if (a.kind === 'video') {
                         if (a.frames && a.frames.length) { a.frames.forEach(f => parts.push(f)); notes.push('Video "' + a.name + '" is attached; the next ' + a.frames.length + ' image(s) are frames sampled evenly from it, in order. Answer using the frames, and mention you cannot hear audio or see motion between frames.'); }
                         else notes.push('Video "' + a.name + '" is attached but its frames could not be read; say you could not view it.');
+                    } else if (a.kind === 'doc') {
+                        const cap = Math.max(2000, Math.min(DOC_CHARS, budget)), cut = a.text.length > cap;
+                        budget -= Math.min(a.text.length, cap);
+                        docText += '\n\n--- Attached file: ' + a.name + ' (' + a.label + ') ---\n' + a.text.slice(0, cap) + (cut ? '\n[... file continues; only the first ' + cap + ' characters are shown ...]' : '') + '\n--- end of file ---';
+                        if (a.pages && a.pages.length) { a.pages.forEach(f => parts.push(f)); notes.push('"' + a.name + '" has no selectable text, so its first ' + a.pages.length + ' page(s) are the attached image(s).'); }
                     }
                 });
-                if (msgs.length && atts.length) {
-                    const last = msgs[msgs.length - 1], q = (text && text.trim()) || 'Describe what you see and anything notable.';
-                    const full = q + '\n\n[' + notes.join(' ') + ']';
+                if (docs.length) docMem = docs.map(d => ({ name: d.name, text: d.text.slice(0, 16000) })).slice(-2);
+                if (msgs.length && (atts.length || docMem.length)) {
+                    const last = msgs[msgs.length - 1], q = (text && text.trim()) || (docs.length ? 'Summarize this file clearly: the key points, and anything I should act on.' : 'Describe what you see and anything notable.');
+                    let full = q;
+                    if (notes.length) full += '\n\n[' + notes.join(' ') + ']';
+                    full += docText;
+                    if (!docs.length && docMem.length) full += '\n\n[For reference, file(s) the visitor attached earlier in this chat:' + docMem.map(d => '\n--- ' + d.name + ' ---\n' + d.text).join('\n') + '\n--- end ---]';
                     last.content = parts.length ? [{ type: 'text', text: full }].concat(parts.map(u => ({ type: 'image_url', image_url: { url: u } }))) : full;
                 }
+                let why = '';
                 if (CHAT_API_URL || OPENROUTER_KEY) {
+                    // keep the request under Vercel's ~4.5 MB limit: drop pictures first, then the oldest messages
+                    const payload = { messages: msgs, context: videosContext() };
+                    const size = () => JSON.stringify(payload).length;
+                    while (size() > 4000000) {
+                        const m = payload.messages.find(x => Array.isArray(x.content) && x.content.length > 1);
+                        if (m) { m.content.pop(); continue; }
+                        if (payload.messages.length > 1) { payload.messages.shift(); continue; }
+                        break;
+                    }
                     const ctl = new AbortController();
-                    const t = setTimeout(() => ctl.abort(), 25000);
+                    const t = setTimeout(() => ctl.abort(), 60000);
                     try {
                         let r, d;
                         if (CHAT_API_URL) {
-                            r = await fetch(CHAT_API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: ctl.signal, body: JSON.stringify({ messages: msgs }) });
-                            d = await r.json();
+                            r = await fetch(CHAT_API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: ctl.signal, body: JSON.stringify(payload) });
+                            d = await r.json().catch(() => null);
                             if (d && typeof d.reply === 'string' && d.reply.trim()) return d.reply.trim().slice(0, 4000);
+                            why = (d && d.error) || (r.status === 404 ? 'the chat service (api/chat.js) is not deployed on this site' : 'chat service error ' + r.status);
                         } else {
                             r = await fetch('https://openrouter.ai/api/v1/chat/completions', {
                                 method: 'POST', signal: ctl.signal,
                                 headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + OPENROUTER_KEY },
-                                body: JSON.stringify({ model: AI_MODEL, max_tokens: 900, temperature: 0.6, messages: [{ role: 'system', content: systemPrompt() }].concat(msgs) })
+                                body: JSON.stringify({ model: AI_MODEL, max_tokens: 900, temperature: 0.6, messages: [{ role: 'system', content: systemPrompt() }].concat(payload.messages) })
                             });
-                            d = await r.json();
+                            d = await r.json().catch(() => null);
                             const out = d && d.choices && d.choices[0] && d.choices[0].message && d.choices[0].message.content;
                             if (typeof out === 'string' && out.trim()) return out.trim().slice(0, 4000);
+                            why = (d && d.error && d.error.message) || ('AI error ' + r.status);
                         }
-                    } catch (e) { /* fall back to built-in answers */ }
+                    } catch (e) { why = e && e.name === 'AbortError' ? 'the AI took too long to answer' : 'no connection to the chat service'; try { console.warn('[chat]', e); } catch (x) {} }
                     finally { clearTimeout(t); }
+                    try { console.warn('[chat] AI unavailable:', why); } catch (x) {}
                 } else {
                     await wait(450 + Math.random() * 450);
+                    why = 'the AI is not connected on this page';
                 }
-                if (atts.length) return "I got your file 📎 but I couldn't reach the AI to look at it just now. Please try again in a moment.\nHave an idea for a video? Drop it in the Suggestion Box.\n[Open the Suggestion Box](#suggest)";
-                return localReply(text);
+                const reason = why ? '\n\n*Reason: ' + String(why).replace(/[*\n]+/g, ' ').slice(0, 160) + '*' : '';
+                if (atts.length) return "I got your file 📎 but couldn't reach the AI to read it just now. Please try again in a moment." + reason;
+                const lr = localReply(text);
+                return /^I couldn't reach my AI brain/.test(lr) ? lr + reason : lr;
             }
 
             async function ask(text) {
@@ -1433,7 +1539,7 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
                 const wl = document.getElementById('chatWelcome'); if (wl) wl.remove();
                 const now = Date.now();
                 addMessage('user', text, { instant: true, t: now, atts: atts });
-                const note = atts.length ? '[attached ' + atts.map(a => a.kind).join(', ') + ']' : '';
+                const note = atts.length ? '[attached: ' + atts.map(a => a.name).join(', ') + ']' : '';
                 history.push({ role: 'user', text: (text + ' ' + note).trim(), t: now }); save();
                 input.value = ''; input.style.height = 'auto'; syncInput();
                 const typing = showTyping();
@@ -1445,10 +1551,11 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
             }
 
             function greet() { history = []; save(); log.innerHTML = ''; chips.hidden = true; showWelcome(); }
-            function reset() { attachments.length = 0; renderStrip(); busy = false; input.value = ''; input.style.height = 'auto'; syncInput(); greet(); }
+            function reset() { attachments.length = 0; docMem = []; renderStrip(); busy = false; input.value = ''; input.style.height = 'auto'; syncInput(); greet(); }
             function syncInput() {
                 const n = input.value.length, has = input.value.trim().length > 0;
                 sendBtn.disabled = busy || !(has || attachments.length);
+                if (Date.now() < flashUntil) return;   // keep a warning visible for a moment
                 countEl.hidden = n < 400; countEl.textContent = n + '/500'; countEl.classList.toggle('warn', n >= 480);
             }
 
