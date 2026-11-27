@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MRSHADOW | Portfolio</title>
     <meta name="description" content="MRSHADOW - Tech, Markets and Life vlogs. Crafting high-quality content for curious minds.">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0a0a0a">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="MRSHADOW">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="icon" type="image/png" href="/icons/icon-192.png">
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 
     <style>
@@ -2396,6 +2404,23 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
             renderEmbed(feed);
         }
         window.addEventListener('load', fetchYouTubeContent);
+    </script>
+    <!-- Installable app (PWA) -->
+    <style>
+        .install-app { position: fixed; left: 16px; bottom: 16px; z-index: 900; display: none; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 999px; border: 1px solid rgba(255,255,255,.18); background: rgba(10,10,10,.85); color: #fff; font: 600 13px Inter, sans-serif; cursor: pointer; backdrop-filter: blur(10px); box-shadow: 0 6px 24px rgba(0,0,0,.4); }
+        .install-app.show { display: inline-flex; }
+        .install-app:hover { border-color: var(--primary); }
+    </style>
+    <button type="button" class="install-app" id="installApp" aria-label="Install the MRSHADOW app">⬇ Install app</button>
+    <script>
+        (function () {
+            if (!/^https?:$/.test(location.protocol)) return;
+            if ('serviceWorker' in navigator) window.addEventListener('load', function () { navigator.serviceWorker.register('/sw.js').catch(function () {}); });
+            var btn = document.getElementById('installApp'), ev = null;
+            window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); ev = e; btn.classList.add('show'); });
+            btn.addEventListener('click', function () { if (!ev) return; ev.prompt(); ev.userChoice.finally(function () { ev = null; btn.classList.remove('show'); }); });
+            window.addEventListener('appinstalled', function () { btn.classList.remove('show'); });
+        })();
     </script>
     <!-- Vercel Web Analytics (cookie-free visitor counts; shows data once enabled in the Vercel dashboard) -->
     <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
