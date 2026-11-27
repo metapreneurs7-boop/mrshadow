@@ -459,6 +459,9 @@
         .chat-attach { flex-shrink: 0; width: 36px !important; height: 36px !important; background: none !important; color: var(--text-dim) !important; border: none; }
         .chat-attach:hover:not(:disabled) { color: var(--chat-ink) !important; background: var(--chat-bot) !important; transform: none !important; }
         .chat-attach svg { width: 20px !important; height: 20px !important; }
+        .chat-imgbtn[aria-pressed="true"] { color: #fff !important; background: var(--accent, #0a84ff) !important; }
+        .gen-img { display: block; max-width: 100%; width: 320px; border-radius: 12px; margin-bottom: 8px; background: var(--chat-bot); }
+        .gen-dl { display: inline-block; font-size: 12px; margin-top: 2px; }
         .chat-strip { display: flex; gap: 8px; padding: 0 2px 8px; overflow-x: auto; }
         .chat-strip:empty { display: none; }
         .att { position: relative; flex-shrink: 0; width: 56px; height: 56px; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: var(--chat-bot); }
@@ -1004,6 +1007,7 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
             <div class="chat-strip" id="chatStrip"></div>
             <form class="chat-form" id="chatForm" autocomplete="off">
                 <button type="button" class="chat-attach" id="chatAttach" aria-label="Attach a photo or video" title="Attach photo or video"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5l-8.6 8.6a5 5 0 0 1-7.1-7.1l8.6-8.6a3.3 3.3 0 0 1 4.7 4.7l-8.6 8.6a1.7 1.7 0 0 1-2.4-2.4l7.9-7.9"/></svg></button>
+                <button type="button" class="chat-attach chat-imgbtn" id="chatImg" aria-pressed="false" aria-label="Create an image" title="Create an image"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 17v4M17 19h4"/></svg></button>
                 <input type="file" id="chatFile" accept="image/*,video/*,.pdf,.docx,.pptx,.xlsx,.xls,.csv,.tsv,.txt,.md,.json,.xml,.html,.htm,.css,.js,.ts,.py,.java,.c,.cpp,.h,.sql,.log,.yaml,.yml,.ini" multiple hidden>
                 <textarea id="chatInput" rows="1" maxlength="500" placeholder="Ask anything..." aria-label="Your message"></textarea>
                 <button type="submit" id="chatSend" aria-label="Send message" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
@@ -1438,7 +1442,15 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
                         bub.append(th);
                     }
                     if (text) bub.append(document.createTextNode(text));
-                } else bub.append(format(text));
+                } else {
+                    if (opts.image) {
+                        const im = document.createElement('img'); im.className = 'gen-img'; im.alt = 'AI generated picture'; im.src = opts.image;
+                        im.addEventListener('load', () => scroll(true));
+                        bub.append(im);
+                        if (/^data:/.test(opts.image)) { const a = document.createElement('a'); a.className = 'gen-dl'; a.href = opts.image; a.download = 'mrshadow-ai-picture.png'; a.textContent = '⬇ Download'; bub.append(a); }
+                    }
+                    bub.append(format(text));
+                }
                 col.append(bub);
                 const meta = document.createElement('div'); meta.className = 'meta';
                 const tm = document.createElement('span'); tm.textContent = stamp(opts.t); meta.append(tm);
@@ -1585,7 +1597,11 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
                         if (CHAT_API_URL) {
                             r = await fetch(CHAT_API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: ctl.signal, body: JSON.stringify(payload) });
                             d = await r.json().catch(() => null);
-                            if (d && typeof d.reply === 'string' && d.reply.trim()) return d.reply.trim().slice(0, 4000);
+                            if (d && typeof d.reply === 'string' && d.reply.trim()) {
+                                let out = d.reply.trim().slice(0, 4000);
+                                if (Array.isArray(d.sources) && d.sources.length) out += '\n\nSources: ' + d.sources.filter(x => x && /^https:\/\//.test(x.url)).map(x => '[' + String(x.title || 'link').replace(/[\[\]()]/g, '') + '](' + x.url + ')').join(' · ');
+                                return out;
+                            }
                             why = (d && d.error) || (r.status === 404 ? 'the chat service (api/chat.js) is not deployed on this site' : 'chat service error ' + r.status);
                         } else {
                             r = await fetch('https://openrouter.ai/api/v1/chat/completions', {
@@ -1611,6 +1627,28 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
                 return /^I couldn't reach my AI brain/.test(lr) ? lr + reason : lr;
             }
 
+            const IMG_RE = /^\s*(?:please\s+|can you\s+|could you\s+)?(?:(?:draw|paint|sketch|imagine)\b|(?:generate|create|make|design|render)\s+(?:me\s+)?(?:an?\s+|the\s+|some\s+)?(?:[\w-]+\s+){0,3}?(?:image|images|picture|pic|photo|illustration|logo|wallpaper|poster|painting|drawing|artwork|thumbnail)\b)/i;
+            let imgMode = false;
+            const imgBtn = document.getElementById('chatImg');
+            function setImgMode(on) {
+                imgMode = !!on;
+                if (imgBtn) imgBtn.setAttribute('aria-pressed', imgMode ? 'true' : 'false');
+                input.placeholder = imgMode ? 'Describe the picture you want...' : 'Ask anything...';
+            }
+            if (imgBtn) imgBtn.addEventListener('click', () => { setImgMode(!imgMode); input.focus(); });
+            async function makeImage(text, atts) {
+                if (!CHAT_API_URL) return { text: 'Picture making needs the live website (it works after you deploy the api folder to Vercel).' };
+                const ref = (atts.find(a => a.kind === 'image' && a.data) || {}).data;
+                const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 60000);
+                try {
+                    const r = await fetch(CHAT_API_URL.replace(/chat$/, 'image'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: ctl.signal, body: JSON.stringify({ prompt: text.replace(/^\s*(?:please\s+)?/i, ''), reference: ref }) });
+                    const d = await r.json().catch(() => null);
+                    if (d && d.image) return { image: d.image, text: ref ? '🎨 Here is your edited picture:' : '🎨 Here is your picture. Ask me to change anything.' };
+                    return { text: "I couldn't make that picture. *Reason: " + String((d && d.error) || (r.status === 404 ? 'api/image.js is not deployed yet' : 'error ' + r.status)).replace(/[*\n]+/g, ' ').slice(0, 160) + '*' };
+                } catch (e) { return { text: "I couldn't make that picture. *Reason: " + (e && e.name === 'AbortError' ? 'it took too long' : 'no connection') + '*' }; }
+                finally { clearTimeout(t); }
+            }
+
             async function ask(text) {
                 text = text.trim();
                 const atts = attachments.splice(0, attachments.length);
@@ -1628,14 +1666,17 @@ Subscribe and be part of the journey—because here, we explore, learn, and grow
                 save(); if (drawer.classList.contains('open')) renderDrawer(); updateHeader();
                 input.value = ''; input.style.height = 'auto'; syncInput();
                 const typing = showTyping();
-                const reply = await getReply(text, atts);
+                const wantImg = !!text && (imgMode || IMG_RE.test(text));
+                let reply, picture = '';
+                if (wantImg) { const g = await makeImage(text, atts); reply = g.text; picture = g.image || ''; setImgMode(false); }
+                else reply = await getReply(text, atts);
                 typing.remove();
                 const t2 = Date.now();
                 const target = store.chats.find(x => x.id === chat.id && !x.deleted);   // (a sync may have replaced the object, so look it up again)
                 if (target) { target.messages.push({ role: 'bot', text: reply, t: t2 }); target.updatedAt = t2; }
                 const shown = curChat(); history = shown ? shown.messages : [];
                 save();
-                if (shown && shown.id === chat.id) addMessage('bot', reply, { t: t2, done: () => { busy = false; syncInput(); setChips(topicOf(text)); input.focus({ preventScroll: true }); } });
+                if (shown && shown.id === chat.id) addMessage('bot', reply, { t: t2, image: picture, instant: !!picture, done: () => { busy = false; syncInput(); setChips(topicOf(text)); input.focus({ preventScroll: true }); } });
                 else { busy = false; syncInput(); }
             }
 
