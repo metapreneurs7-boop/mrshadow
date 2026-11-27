@@ -23,3 +23,10 @@ ALSO: in index.html set   const GOOGLE_CLIENT_ID = 'your-client-id.apps.googleus
 
 Saved chats and projects work on the same device even without Google sign-in.
 Sign-in is only needed to open them on other devices.
+
+
+--- UPDATE: live web search + picture making ---
+New/changed files: api/chat.js (now searches the web and knows today's date), api/image.js (NEW, makes pictures).
+Optional Vercel env vars: AI_MODEL (e.g. openai/gpt-4o-mini), IMAGE_MODEL (default bytedance-seed/seedream-4.5, ~$0.05 per picture),
+IMAGES_PER_HOUR (default 6 per visitor), WEB_SEARCH=off (turn search off; each search costs ~$0.005).
+Keep a spending limit on your OpenRouter key. Redeploy after changing anything.
